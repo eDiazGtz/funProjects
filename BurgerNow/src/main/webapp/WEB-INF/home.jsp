@@ -52,8 +52,57 @@
 </thead>
 <tbody>
 <tr>
-<td>Orders By Complete</td>
+<c:forEach items="${ guestOrders }" var="order">
+<c:if test="${ order.complete == true}">
+<c:forEach items="${ order.burgers }" var="burger">
+<tr>
+<td>${ burger.qty } ${ burger.type } - 
+
+<c:if test = "${  burger.sauce == true }">
+Sauce 
+</c:if>
+<c:if test = "${  burger.lettuce == true }">
+Lettuce 
+</c:if>
+<c:if test = "${  burger.tomato == true }">
+Tomato 
+</c:if>
+<c:if test = "${  burger.onion == true }">
+Onion 
+</c:if>
+<c:if test = "${  burger.ketchup == true }">
+Ketchup 
+</c:if>
+<c:if test = "${  burger.pickles == true }">
+Pickles 
+</c:if>
+</td>
 </tr>
+</c:forEach>
+
+<c:forEach items="${ order.fries }" var="fry">
+<tr>
+<td>${ fry.qty } ${ fry.type } - 
+
+<c:if test = "${  fry.sauce == true }">
+Sauce 
+</c:if>
+<c:if test = "${  fry.onion == true }">
+Onion 
+</c:if>
+<c:if test = "${  fry.ketchup == true }">
+Ketchup 
+</c:if>
+<c:if test = "${  fry.cheese == true }">
+Cheese 
+</c:if>
+</td>
+</tr>
+</c:forEach>
+</c:if>
+</c:forEach>
+</tr>
+
 </tbody>
 </table>
 </div>

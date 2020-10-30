@@ -31,11 +31,7 @@ public class OrderService {
 		return order;
 	}
 	
-	//Add Burger to Order
-	
-	
-	//Add Fry to Order
-	
+	//Find By Complete == True
 	
 	
 	//Don't need to Delete for now

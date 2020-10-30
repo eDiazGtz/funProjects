@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -43,12 +44,16 @@ public class HomeController {
 	//Home Page (Root)
 	@GetMapping("/")
 	public String index(HttpSession session, Model viewModel) {
+
 		Long userId = (Long)session.getAttribute("user_id");
 		if(userId == null) {
 			return "home.jsp";
 		}
 		viewModel.addAttribute("user_id", userId);
 		viewModel.addAttribute("user", this.uService.getOneUser(userId));
+		User thisUser = this.uService.getOneUser(userId);
+		List<Order> guestOrders = thisUser.getOrders();
+		viewModel.addAttribute("guestOrders", guestOrders);
 		return "home.jsp";
 	}
 
@@ -246,8 +251,57 @@ public class HomeController {
 		viewModel.addAttribute("order", oService.findOneOrder(orderId));
 		return "checkout.jsp";
 	}
-	
 
+	@PostMapping("/purchase")
+	public String purchase(Model viewModel, @RequestParam("orderId") Long orderId, HttpSession session) {
+		Order finalOrder = oService.findOneOrder(orderId);
+		finalOrder.setComplete(true);
+		Long userId = (Long)session.getAttribute("user_id");
+		User user = this.uService.getOneUser(userId);
+		finalOrder.setGuest(user);
+		oService.saveOrder(finalOrder);
+		return "redirect:/";
+	}
+
+	
+	
+	//-----------------------------------
+	//EDIT SINGLE ITEM
+	//-----------------------------------
+
+	
+	
+	
+	//-----------------------------------
+	//DELETE @ CHECKOUT
+	//-----------------------------------
+	//Checkout Delete Burger
+	@PostMapping("/delete/burger/{id}")
+	public String deleteBurger(@PathVariable("id") Long id, Model viewModel, @RequestParam("orderId") Long orderId) {
+		bService.deleteBurger(id);
+		viewModel.addAttribute("orderId", orderId);
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		return "checkout.jsp";
+	}
+	
+	//Checkout Delete Fry
+	@PostMapping("/delete/fry/{id}")
+	public String deleteFry(@PathVariable("id") Long id, Model viewModel, @RequestParam("orderId") Long orderId) {
+		fService.deleteFry(id);
+		viewModel.addAttribute("orderId", orderId);
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		return "checkout.jsp";
+	}
+	
+	
 	
 	//LogOut
 	@GetMapping("/logout")

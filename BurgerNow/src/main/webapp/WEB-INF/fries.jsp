@@ -20,7 +20,12 @@
 <table class="table">
 <thead>
 <td><a href="/">HOME</a></td>
-<td><a href="/checkout">ORDER(<c:out value="${burgQty + fryQty}"/>)</a></td>
+<td>
+<form action="/checkout" method="post">
+<input type="hidden" name="orderId" value="${ orderId }"/>
+<button>ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
+</form>
+</td>
 <td>ACCOUNT</td>
 <c:choose>
 <c:when test="${user_id != null }">
@@ -41,7 +46,7 @@
 <div class="form form-group">
 <form:label path="qty"> Fry Quantity: 
 <form:errors path="qty"/>
-<form:input path="qty" type="number" min="1"/>
+<form:input path="qty" type="number" min="1" value="1" />
 </form:label>
 </div>
 
