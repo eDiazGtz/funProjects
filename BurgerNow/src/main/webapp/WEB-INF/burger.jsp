@@ -41,7 +41,7 @@
 <div class="form form-group">
 <form:label path="qty"> Burger Quantity: 
 <form:errors path="qty"/>
-<form:input path="qty" type="number" min="0" value="1"/>
+<form:input path="qty" type="number" min="1"/>
 </form:label>
 </div>
 
@@ -132,7 +132,12 @@
 
 </form:form>
 
+<hr>
 
+<form action="/fries" method="get">
+<input type="hidden" name="orderId" value="${ orderId }"/>
+<button class="btn btn-primary">Next, Fries!</button>
+</form>
 
 
 <!-- <div class="form form-group"> -->

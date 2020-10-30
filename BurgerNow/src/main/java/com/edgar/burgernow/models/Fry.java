@@ -27,6 +27,10 @@ public class Fry {
 	private Long id;
 	private int qty;
 	private String type;
+	private Boolean sauce;
+	private Boolean onion;
+	private Boolean ketchup;
+	private Boolean cheese;
 	
 	
 	//Relationships
@@ -116,6 +120,40 @@ public class Fry {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+
+	public Boolean getSauce() {
+		return sauce;
+	}
+
+	public void setSauce(Boolean sauce) {
+		this.sauce = sauce;
+	}
+
+	public Boolean getOnion() {
+		return onion;
+	}
+
+	public void setOnion(Boolean onion) {
+		this.onion = onion;
+	}
+
+	public Boolean getKetchup() {
+		return ketchup;
+	}
+
+	public void setKetchup(Boolean ketchup) {
+		this.ketchup = ketchup;
+	}
+
+	public Boolean getCheese() {
+		return cheese;
+	}
+
+	public void setCheese(Boolean cheese) {
+		this.cheese = cheese;
+	}
+	
+	
 
 	
 	

@@ -100,7 +100,7 @@ public class HomeController {
 	//ORDERING BURGERS
 	//-----------------------------------
 	@GetMapping("/burger")
-	public String newOrderBurgerMenu(@ModelAttribute("burger") Burger burger, Model viewModel, @RequestParam("orderId") Long orderId) {
+	public String burgerMenu(@ModelAttribute("burger") Burger burger, Model viewModel, @RequestParam("orderId") Long orderId) {
 		//Model to Pass ID
 		viewModel.addAttribute("orderId", orderId);
 		Order modelOrder = this.oService.findOneOrder(orderId);
@@ -170,21 +170,47 @@ public class HomeController {
 	//-----------------------------------
 	//ORDERING FRIES
 	//-----------------------------------
+	//Adding Burger to Order
 	@GetMapping("/fries")
-	public String friesMenu(@ModelAttribute("fry") Fry fry, Model viewModel, @RequestParam("orderId") Long orderId) {
-		//Get Order
-		Order thisOrder = this.oService.findOneOrder(orderId);
+	public String fryMenu(@ModelAttribute("fries") Fry fry, Model viewModel, @RequestParam("orderId") Long orderId) {
 		//Model to Pass ID
-		viewModel.addAttribute("order", thisOrder);
+		viewModel.addAttribute("orderId", orderId);
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+		viewModel.addAttribute("order", oService.findOneOrder(orderId));
 		return "fries.jsp";
 	}
-	
+
+
 	@PostMapping("/fries")
-	public String orderfries(@Valid @ModelAttribute("fry") Fry fry, BindingResult result, @RequestParam("orderId") Long orderId) {
+	public String orderFry(@Valid @ModelAttribute("fries") Fry fry, BindingResult result, @RequestParam("orderId") Long orderId, Model viewModel) {		
 		if(result.hasErrors()) {
+			viewModel.addAttribute("orderId", orderId);
+			Order modelOrder = this.oService.findOneOrder(orderId);
+			viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+			viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+			viewModel.addAttribute("order", oService.findOneOrder(orderId));
 			return "fries.jsp";
 		}
-		this.fService.saveFry(fry);
+		//If No Fry is Chosen -- DO NOT SAVE to DB. Allows to order no FF
+		if(fry.getType() == "") {
+			viewModel.addAttribute("orderId", orderId);
+			Order modelOrder = this.oService.findOneOrder(orderId);
+			viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+			viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+			viewModel.addAttribute("order", oService.findOneOrder(orderId));
+			return "fries.jsp";
+		}
+		fService.saveFry(fry);
+		viewModel.addAttribute("orderId", orderId);
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+		viewModel.addAttribute("order", oService.findOneOrder(orderId));
 		//Add Fry to Order
 		Order thisOrder = this.oService.findOneOrder(orderId);
 		List<Fry> orderFries = thisOrder.getFries();
@@ -193,8 +219,33 @@ public class HomeController {
 		oService.saveOrder(thisOrder);
 		return "fries.jsp";
 	}
-	
-	
+
+	//-----------------------------------
+	//CHECKOUT
+	//-----------------------------------
+	@GetMapping("/checkout")
+	public String getCheckout(Model viewModel, @RequestParam("orderId") Long orderId) {
+		//Model to Pass ID
+		viewModel.addAttribute("orderId", orderId);
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		return "checkout.jsp";
+	}
+
+	@PostMapping("/checkout")
+	public String postCheckout(Model viewModel, @RequestParam("orderId") Long orderId) {
+		//Model to Pass ID
+		viewModel.addAttribute("orderId", orderId);
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		return "checkout.jsp";
+	}
 	
 
 	
