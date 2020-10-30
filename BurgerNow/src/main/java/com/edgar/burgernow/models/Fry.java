@@ -9,44 +9,39 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name="users")
-public class User {
+@Table(name="fries")
+public class Fry {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	@NotBlank
-	@Size(max=15)
-	private String firstName;
-	@NotBlank
-	@Size(max=30)
-	private String lastName;
-	@Email
-	@NotBlank
-	private String email;
-	@NotBlank
-	private String password;
-	@NotBlank
-	@Transient
-	private String confirmPassword;
-
-
+	private int qty;
+	private String type;
+	
+	
 	//Relationships
-	@OneToMany(mappedBy="guest",fetch=FetchType.LAZY)
-	private List<Order> orders;
-
-
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="order_id")
+	private Order fOrder;
+	
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+			name="fries_ingredients",
+			joinColumns = @JoinColumn(name="fry_id"),
+			inverseJoinColumns = @JoinColumn(name="ingredient_id")
+	)
+	private List<Ingredient> ingredients;	
+	
 	@Column(updatable = false)
 	@DateTimeFormat(pattern = "yyyy-MM-DD HH:mm:ss")
 	private Date createdAt;
@@ -62,9 +57,8 @@ public class User {
 	protected void OnUpdate() {
 		this.updatedAt = new Date();
 	}
-	
-	
-	public User() {
+
+	public Fry() {
 	}
 
 	public Long getId() {
@@ -75,44 +69,36 @@ public class User {
 		this.id = id;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public int getQty() {
+		return qty;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setQty(int qty) {
+		this.qty = qty;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getType() {
+		return type;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public String getEmail() {
-		return email;
+	public Order getfOrder() {
+		return fOrder;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setfOrder(Order fOrder) {
+		this.fOrder = fOrder;
 	}
 
-	public String getPassword() {
-		return password;
+	public List<Ingredient> getIngredients() {
+		return ingredients;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getConfirmPassword() {
-		return confirmPassword;
-	}
-
-	public void setConfirmPassword(String confirmPassword) {
-		this.confirmPassword = confirmPassword;
+	public void setIngredients(List<Ingredient> ingredients) {
+		this.ingredients = ingredients;
 	}
 
 	public Date getCreatedAt() {
@@ -133,4 +119,6 @@ public class User {
 
 	
 	
+	
+
 }
