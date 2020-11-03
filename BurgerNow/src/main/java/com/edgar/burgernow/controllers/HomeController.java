@@ -265,20 +265,23 @@ public class HomeController {
 	//-----------------------------------
 	//CHECKOUT
 	//-----------------------------------
-	
-	//Add functionality -- if (order.guest is not null && guestID == sessionID) --> allow view of checkout item. 
-	//To secure people brute forcing checkout items that belong to users --- check that order has guest.
-	//If it does, check that the guestID == SessionID so that other guests cannot brute force either. 
-	
+		
 	@PostMapping("/order/checkout")
-	public String getCheckout(Model viewModel, @RequestParam("orderId") Long orderId) {
+	public String getCheckout(Model viewModel, @RequestParam("orderId") Long orderId, HttpSession session) {
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		Long userId = (Long)session.getAttribute("user_id");
+		User sessUser = uService.findOneUser(userId);
+		if(modelOrder.getGuest() != null) {
+			User modelUser = modelOrder.getGuest();
+			if(sessUser.getId() != modelUser.getId()) {
+				return "redirect:/";
+			}
+		}
 		//Model to Pass ID
 		viewModel.addAttribute("orderId", orderId);
-		Order modelOrder = this.oService.findOneOrder(orderId);
 		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
-
-		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		viewModel.addAttribute("order", modelOrder);
 		return "checkout.jsp";
 	}
 
@@ -317,31 +320,44 @@ public class HomeController {
 	//EDIT SINGLE ITEM
 	//-----------------------------------
 	@PostMapping("/edit/burger/{id}")
-	public String editBurger(@PathVariable("id") Long id, @ModelAttribute("burger") Burger burger, Model viewModel, @RequestParam("orderId") Long orderId) {
+	public String editBurger(@PathVariable("id") Long id, @ModelAttribute("burger") Burger burger, Model viewModel, @RequestParam("orderId") Long orderId, HttpSession session) {
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		Long userId = (Long)session.getAttribute("user_id");
+		User sessUser = uService.findOneUser(userId);
+		if(modelOrder.getGuest() != null) {
+			User modelUser = modelOrder.getGuest();
+			if(sessUser.getId() != modelUser.getId()) {
+				return "redirect:/";
+			}
+		}
 		viewModel.addAttribute("burger", bService.findOneBurger(id));
 		viewModel.addAttribute("orderId", orderId);
-		Order modelOrder = this.oService.findOneOrder(orderId);
 		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
-
-		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		viewModel.addAttribute("order", modelOrder);
 		return "editBurger.jsp";
 	}
 	
 	@PostMapping("/finalize/burger/{id}")
-	public String finalizeBurger(@Valid @ModelAttribute("burger") Burger updatedBurger, BindingResult result, Model viewModel, @PathVariable("id") Long id, @RequestParam("orderId") Long orderId) {
+	public String finalizeBurger(@Valid @ModelAttribute("burger") Burger updatedBurger, BindingResult result, HttpSession session, Model viewModel, @PathVariable("id") Long id, @RequestParam("orderId") Long orderId) {
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		Long userId = (Long)session.getAttribute("user_id");
+		User sessUser = uService.findOneUser(userId);
+		if(modelOrder.getGuest() != null) {
+			User modelUser = modelOrder.getGuest();
+			if(sessUser.getId() != modelUser.getId()) {
+				return "redirect:/";
+			}
+		}
 		if(result.hasErrors()) {
 			viewModel.addAttribute("burger", bService.findOneBurger(id));
 			viewModel.addAttribute("orderId", orderId);
-			Order modelOrder = this.oService.findOneOrder(orderId);
 			viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 			viewModel.addAttribute("fryQty", modelOrder.getFries().size());
-
-			viewModel.addAttribute("order", oService.findOneOrder(orderId));
+			viewModel.addAttribute("order", modelOrder);
 			return "editBurger.jsp";
 		}
 		viewModel.addAttribute("orderId", orderId);
-		Order modelOrder = this.oService.findOneOrder(orderId);
 		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
 
@@ -353,35 +369,47 @@ public class HomeController {
 	
 	//FF Edit	
 	@PostMapping("/edit/fry/{id}")
-	public String editFries(@PathVariable("id") Long id, @ModelAttribute("fries") Fry fry, Model viewModel, @RequestParam("orderId") Long orderId) {
+	public String editFries(@PathVariable("id") Long id, @ModelAttribute("fries") Fry fry, Model viewModel, HttpSession session, @RequestParam("orderId") Long orderId) {
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		Long userId = (Long)session.getAttribute("user_id");
+		User sessUser = uService.findOneUser(userId);
+		if(modelOrder.getGuest() != null) {
+			User modelUser = modelOrder.getGuest();
+			if(sessUser.getId() != modelUser.getId()) {
+				return "redirect:/";
+			}
+		}
 		viewModel.addAttribute("fries", fService.findOneFry(id));
 		viewModel.addAttribute("orderId", orderId);
-		Order modelOrder = this.oService.findOneOrder(orderId);
 		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
-
-		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		viewModel.addAttribute("order", modelOrder);
 		return "editFries.jsp";
 	}
 	
 	@PostMapping("/finalize/fry/{id}")
-	public String finalizeFry(@Valid @ModelAttribute("fries") Fry updatedFry, BindingResult result, Model viewModel, @PathVariable("id") Long id, @RequestParam("orderId") Long orderId) {
+	public String finalizeFry(@Valid @ModelAttribute("fries") Fry updatedFry, BindingResult result, Model viewModel, HttpSession session, @PathVariable("id") Long id, @RequestParam("orderId") Long orderId) {
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		Long userId = (Long)session.getAttribute("user_id");
+		User sessUser = uService.findOneUser(userId);
+		if(modelOrder.getGuest() != null) {
+			User modelUser = modelOrder.getGuest();
+			if(sessUser.getId() != modelUser.getId()) {
+				return "redirect:/";
+			}
+		}
 		if(result.hasErrors()) {
 			viewModel.addAttribute("fries", fService.findOneFry(id));
 			viewModel.addAttribute("orderId", orderId);
-			Order modelOrder = this.oService.findOneOrder(orderId);
 			viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 			viewModel.addAttribute("fryQty", modelOrder.getFries().size());
-
 			viewModel.addAttribute("order", oService.findOneOrder(orderId));
 			return "editFries.jsp";
 		}
 		viewModel.addAttribute("orderId", orderId);
-		Order modelOrder = this.oService.findOneOrder(orderId);
 		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
-
-		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		viewModel.addAttribute("order", modelOrder);
 		this.fService.saveFry(updatedFry);
 		return "checkout.jsp";
 	}
@@ -427,113 +455,5 @@ public class HomeController {
 		session.invalidate();
 		return "redirect:/";
 	}
-		
-	
-	
-	
-	
-	
-	
-//	//Joining (Attending) an Event
-//	@GetMapping("/join/{id}")
-//	private String like(@PathVariable("id") Long id, HttpSession session){
-//		Long userId = (Long)session.getAttribute("user_id");
-//		Long eventId = id;
-//		User attendee = this.uService.getOneUser(userId);
-//		Event attendedEvent = this.eService.findOneEvent(eventId);
-//		this.eService.addAttendee(attendee, attendedEvent);
-//		return "redirect:/dashboard";
-//	}
-//
-//	//Canceling (Unjoinin) an Event
-//	@GetMapping("/unjoin/{id}")
-//	private String unlike(@PathVariable("id") Long id, HttpSession session) {
-//		Long userId = (Long)session.getAttribute("user_id");
-//		Long eventId = id;
-//		User attendee = this.uService.getOneUser(userId);
-//		Event attendedEvent = this.eService.findOneEvent(eventId);
-//		this.eService.removeAttendee(attendee, attendedEvent);
-//		return "redirect:/dashboard";
-//	}
-	
-	
-//	//Creating new Event
-//	@PostMapping("/events/new")
-//	public String newEvent(@Valid @ModelAttribute("event") Event newEvent, BindingResult result, Model viewModel, HttpSession session) {
-//		if(session.getAttribute("user_id") == null) {
-//			return "redirect:/";
-//		}
-//		if(result.hasErrors()) {
-//			Long userId = (Long)session.getAttribute("user_id");
-//			viewModel.addAttribute("user_id", userId);
-//			return "edit.jsp";
-//		}
-//		eService.saveEvent(newEvent);
-//		return "redirect:/dashboard";
-//	}
-
-	
-	
-	
-	
-//	//Editing Event
-//	@GetMapping("/events/{id}/edit")
-//	public String viewEditEvent(@ModelAttribute("event") Event event, @PathVariable("id") Long id, HttpSession session, Model viewModel) {
-//		Long userId = (Long)session.getAttribute("user_id");
-//		viewModel.addAttribute("user_id", userId);
-//		if(!eService.findHostId(id).equals(session.getAttribute("user_id"))) {
-//			return "redirect:/dashboard";
-//		}
-//		if(session.getAttribute("user_id") == null) {
-//			return "redirect:/";
-//		}
-//		viewModel.addAttribute("event", this.eService.findOneEvent(id));
-//		return "edit.jsp";
-//	}
-
-//	//Editing Event Logic
-//	@PostMapping("/events/{id}/edit")
-//	public String editEvent(@Valid @ModelAttribute("event") Event updatedEvent, BindingResult result, Model viewModel, HttpSession session, @PathVariable("id") Long id) {
-//		if(session.getAttribute("user_id") == null) {
-//			return "redirect:/";
-//		}
-//		if(result.hasErrors()) {
-//			Long userId = (Long)session.getAttribute("user_id");
-//			viewModel.addAttribute("user_id", userId);
-//			return "edit.jsp";
-//		}
-//		this.eService.saveEvent(updatedEvent);
-//		return "redirect:/dashboard";
-//	}
-
-	
-	
-	//	//View Event
-//	@GetMapping("/events/{id}")
-//	public String viewEvent(@ModelAttribute("message") Message message, @PathVariable("id") Long id, Model viewModel, HttpSession session) {
-//		if(session.getAttribute("user_id") == null) {
-//			return "redirect:/";
-//		}
-//		viewModel.addAttribute("event", this.eService.findOneEvent(id));
-//		viewModel.addAttribute("hostName", this.eService.findHostName(id));
-//		return "showEvent.jsp";
-//	}
-	
-//	//Add Message Logic
-//	@PostMapping("/message/new")
-//	public String newMessage(@Valid @ModelAttribute("message") Message message, BindingResult result, HttpSession session) {
-//		if(result.hasErrors()) {
-//			return "showEvent.jsp";
-//		}
-//		Message newMessage = this.mService.createMessage(message);
-//		return "redirect:/events/" + newMessage.getEvent().getId();
-//	}
-	
-//	//Delete
-//	@GetMapping("/delete/{id}")
-//	public String delete(@PathVariable("id") Long id) {
-//		this.eService.deleteEvent(id);
-//		return "redirect:/dashboard";
-//	}
 	
 }
