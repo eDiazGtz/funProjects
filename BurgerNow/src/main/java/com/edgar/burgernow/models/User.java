@@ -37,7 +37,6 @@ public class User {
 	private String email;
 	@NotBlank
 	private String password;
-	@NotBlank
 	@Transient
 	private String confirmPassword;
 

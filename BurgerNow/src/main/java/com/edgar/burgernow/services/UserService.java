@@ -14,11 +14,11 @@ public class UserService {
 	@Autowired
 	private UserRepository uRepo;
 	
-	public List<User> getAllUsers() {
+	public List<User> findAllUsers() {
 		return this.uRepo.findAll();
 	}
 	
-	public User getOneUser(Long id) {
+	public User findOneUser(Long id) {
 		User user = this.uRepo.findById(id).orElse(null);
 		return user;
 	}
@@ -48,6 +48,10 @@ public class UserService {
 		return user;
 	}
 	
+	public User saveUser(User user) {
+		User newUser = this.uRepo.save(user);
+		return newUser;
+	}
 	
 	
 }

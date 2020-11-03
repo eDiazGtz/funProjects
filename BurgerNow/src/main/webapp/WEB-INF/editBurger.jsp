@@ -38,6 +38,7 @@
   <li class="nav-item">
     <a class="nav-link bg-danger text-light shadow" href="/account">ACCOUNT</a>
   </li>
+  <li class="nav-item">
 <c:choose>
 <c:when test="${user_id != null }">
 <li class="nav-item">
@@ -53,9 +54,8 @@
 </ul>
 <hr>
 
-
 <div class="form-inline bg-danger text-light rounded p-2 d-flex justify-content-around">
-<form:form class="form-inline" action="/burger" method="post" modelAttribute="burger">
+<form:form action="/finalize/burger/${ burger.id }" method="post" modelAttribute="burger">
 	<form:input type="hidden" value="${orderId}" path="bOrder" />
 
 <div class="row">
@@ -150,30 +150,11 @@
 
 <div class="col">
 <input type="hidden" name="orderId" value="${ orderId }">
-<button class="btn btn-warning">OrderNow!</button>
+<button class="btn btn-warning">Edit Burger!</button>
 </div>
-
 
 </form:form>
 
-<div class="col">
-<form action="/order/fries" method="post">
-<input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-warning">Next, Fries!</button>
-</form>
 </div>
-
-<div class="col">
-<form action="/order/checkout" method="post">
-<input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-warning">Checkout!</button>
-</form>
-</div>
-
-</div>
-
-</div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 </body>
 </html>

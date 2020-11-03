@@ -16,33 +16,48 @@
 </head>
 <body>
 <div class="container">
+<div class="row">
+<div class="col">
+<h1 class="bg-danger text-light mt-2 pb-2 d-flex justify-content-around rounded shadow-lg">BurgerNow!</h1>
+</div>
+<div class="col"></div>
+<div class="col"></div>
+</div>
+<hr>
 
-<table class="table">
-<thead>
-<td><a href="/">HOME</a></td>
-<td>
-<form action="/checkout" method="post">
-<input type="hidden" name="orderId" value="${ orderId }"/>
-<button>ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
-</form>
-</td>
-<td>ACCOUNT</td>
+<ul class="nav nav-pills justify-content-end">
+  <li class="nav-item">
+  	<form action="/checkout" method="post">
+	<input type="hidden" name="orderId" value="${ orderId }"/>
+	<button class="btn btn-warning bg-light text-dark border border-white">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
+	</form>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link bg-danger text-light" href="/">HOME</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link bg-danger text-light" href="/account">ACCOUNT</a>
+  </li>
+  <li class="nav-item">
 <c:choose>
 <c:when test="${user_id != null }">
-<td><a href="/logout">LOGOUT</a></td>
+<li class="nav-item">
+<a class="nav-link bg-danger text-light" href="/logout">LOGOUT</a>
+</li>
 </c:when>
 <c:otherwise>
-<td><a href="/login">LOGIN</a></td>
-</c:otherwise>	
+<li class="nav-item">
+<a class="nav-link bg-danger text-light" href="/login">LOGIN</a>
+</li>
+</c:otherwise>
 </c:choose>
-</thead>
-</table>
+</ul>
+<hr>
 
-
-<table class="table table-hover table-dark">
+<table class="table table-hover table-borderless bg-danger rounded text-light">
 <thead>
-<td>Your Order!</td>
-<td>Action</td>
+<th>Your Order!</th>
+<th>Action</th>
 </thead>
 <tbody>
 <c:forEach items="${ order.burgers }" var="burger">
@@ -69,12 +84,21 @@ Pickles
 </c:if>
 </td>
 
+
 <td>
+<div class="form-inline">
+<form action="/edit/burger/${ burger.id }" method="post">
+<input type="hidden" name="orderId" value="${ orderId }"/>
+<button class="btn btn-warning">Edit</button>
+</form>
+
 <form action="/delete/burger/${ burger.id }" method="post">
 <input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-danger">Delete</button>
+<button class="btn btn-secondary">Delete</button>
 </form>
+</div>
 </td>
+
 
 </tr>
 </c:forEach>
@@ -98,10 +122,17 @@ Cheese
 </td>
 
 <td>
+<div class="form-inline">
+<form action="/edit/fry/${ fry.id }" method="post">
+<input type="hidden" name="orderId" value="${ orderId }"/>
+<button class="btn btn-warning">Edit</button>
+</form>
+
 <form action="/delete/fry/${ fry.id }" method="post">
 <input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-danger">Delete</button>
+<button class="btn btn-secondary">Delete</button>
 </form>
+</div>
 </td>
 
 </tr>
@@ -112,25 +143,27 @@ Cheese
 </table>
 
 <hr>
-
-<form action="/burger" method="get">
+<ul class="nav nav-justified">
+  <li class="nav-item">
+<form action="/order/burger" method="post">
 <input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-primary">More Burgers!</button>
+<button class="btn btn-warning">More Burgers!</button>
 </form>
-
-<hr>
-
-<form action="/fries" method="get">
+</li>
+  <li class="nav-item">
+<form action="/order/fries" method="post">
 <input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-primary">More Fries!</button>
+<button class="btn btn-warning">More Fries!</button>
 </form>
-
-<hr>
-
+</li>
+  <li class="nav-item">
 <form action="/purchase" method="post">
 <input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-primary">Purchase!</button>
+<button class="btn btn-warning">Purchase!</button>
 </form>
+</li>
+</ul>
+
 
 <hr>
 

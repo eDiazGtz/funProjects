@@ -20,7 +20,6 @@ public class UserValidator {
         User user = (User) target;
         
         if(!user.getPassword().equals(user.getConfirmPassword())) {
-        	System.out.println("Takoyaki");
         	//first field is a PATH to the ATTRIBUTE on the MODEL -- password is attr, passwordError isn't == that's why it broke
         	errors.rejectValue("password", "match", "Passwords must match");
         }

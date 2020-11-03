@@ -12,46 +12,71 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
 	integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
 	crossorigin="anonymous">
-
 </head>
 <body>
 <div class="container">
 
-<h1>BurgerNow!</h1>
+<div class="row">
+<div class="col">
+<h1 class="bg-danger text-light mt-2 pb-2 d-flex justify-content-around rounded shadow-lg">BurgerNow!</h1>
+</div>
+<div class="col"></div>
+<div class="col"></div>
+</div>
+<hr>
 
-<table class="table">
-<thead>
-<td><a href="/">HOME</a></td>
-<td>ACCOUNT</td>
+
+<ul class="nav nav-pills justify-content-end">
+  <li class="nav-item">
+    <a class="nav-link active bg-light text-dark shadow" href="/">HOME</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link bg-danger text-light shadow" href="/account">ACCOUNT</a>
+  </li>
+  <li class="nav-item">
 <c:choose>
 <c:when test="${user_id != null }">
-<td><a href="/logout">LOGOUT</a></td>
+<li class="nav-item">
+<a class="nav-link bg-danger text-light shadow" href="/logout">LOGOUT</a>
+</li>
 </c:when>
 <c:otherwise>
-<td><a href="/login">LOGIN</a></td>
-</c:otherwise>	
+<li class="nav-item">
+<a class="nav-link bg-danger text-light shadow" href="/login">LOGIN</a>
+</li>
+</c:otherwise>
 </c:choose>
-</thead>
-</table>
+</ul>
 <hr>
+
 
 
 <div class="row">
 <div class="col">
-<h4>Let's Burger!</h4>
-<form action="/order/burger" method="post">
+
+<div class="row">
+<div class="col bg-danger rounded pb-2 m-4 ml-5">
+<h4 class="text-light d-flex justify-content-around" >Let's Burger!</h4>
+<form class="d-flex justify-content-around" action="/new/order/burger" method="post">
 <input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-primary">Order Now!</button>
+<button class="btn btn-warning">Order Now!</button>
 </form>
 </div>
+<div class="col m-n5"></div>
 
-<div class="col">
-<table class="table table-hover">
+</div>
+</div>
+
+
+<div class="col mr-5">
+<table class="table table-hover table-borderless table-sm bg-danger text-light rounded p-5 mr-5 w-100 overflow-auto">
 <thead>
-<td>Previous Orders</td>
+<th>Previous Orders</th>
 </thead>
 <tbody>
-<tr>
+<c:choose>
+<c:when test="${user_id != null }">
+
 <c:forEach items="${ guestOrders }" var="order">
 <c:if test="${ order.complete == true}">
 <c:forEach items="${ order.burgers }" var="burger">
@@ -100,14 +125,33 @@ Cheese
 </tr>
 </c:forEach>
 </c:if>
-</c:forEach>
-</tr>
 
+<td><hr></td>
+<td>
+<form action="/checkout" method="post">
+<input type="hidden" name="orderId" value="${ order.id }"/>
+<button class="btn btn-warning">Order Again!</button>
+</form>
+</td>
+</c:forEach>
+</c:when>
+<c:otherwise>
+<tr>
+<td>Register <a class="text-light" href="/register">here</a> so you can start saving your orders!</td>
+</tr>
+<tr>
+<td>Already Burgered Up? Login <a class="text-light" href="/login">here</a> so you can get all your delicious orders!</td> 
+</tr>
+</c:otherwise>
+</c:choose>
 </tbody>
 </table>
 </div>
 
 </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 </body>
 </html>

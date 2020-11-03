@@ -38,6 +38,7 @@
   <li class="nav-item">
     <a class="nav-link bg-danger text-light shadow" href="/account">ACCOUNT</a>
   </li>
+  <li class="nav-item">
 <c:choose>
 <c:when test="${user_id != null }">
 <li class="nav-item">
@@ -53,19 +54,17 @@
 </ul>
 <hr>
 
-
 <div class="form-inline bg-danger text-light rounded p-2 d-flex justify-content-around">
-<form:form class="form-inline" action="/burger" method="post" modelAttribute="burger">
-	<form:input type="hidden" value="${orderId}" path="bOrder" />
+<form:form action="/finalize/fry/${ fries.id }" method="post" modelAttribute="fries">
+	<form:input type="hidden" value="${orderId}" path="fOrder" />
 
 <div class="row">
 <div class="col">
-<form:label path="qty"> Burgers: 
+<form:label path="qty"> Fries: 
 <form:errors path="qty"/>
-<form:input class="form-control" path="qty" type="number" min="1" max="500" value="1"/>
+<form:input path="qty" class="form-control" type="number" min="1" max="500" value="1" />
 </form:label>
 </div>
-
 
 <div class="col">
 <table class="table table-hover text-light">
@@ -78,24 +77,20 @@
 </thead>
 <tbody>
 <tr>
-<td>No Burger</td>
+<td>No Fry</td>
 <td><form:radiobutton path="type"/></td>
 </tr>
 <tr>
-<td>Double-Double</td>
-<td><form:radiobutton path="type" value="Double-Double" checked="checked"/></td>
+<td>Golden</td>
+<td><form:radiobutton path="type" value="Golden Fries" checked="checked"/></td>
 </tr>
 <tr>
-<td>Cheeseburger</td>
-<td><form:radiobutton path="type" value="Cheeseburger"/></td>
+<td>Crispy</td>
+<td><form:radiobutton path="type" value="Crispy Fries"/></td>
 </tr>
 <tr>
-<td>Hamburger</td>
-<td><form:radiobutton path="type" value="Hamburger"/></td>
-</tr>
-<tr>
-<td>Grilled Cheese</td>
-<td><form:radiobutton path="type" value="Grilled Cheese"/></td>
+<td>Light</td>
+<td><form:radiobutton path="type" value="Light Fries"/></td>
 </tr>
 </table>
 </div>
@@ -107,32 +102,20 @@
 <th>Yes</th>
 <th>No</th>
 <form:errors path="sauce"/>
-<form:errors path="lettuce"/>
-<form:errors path="tomato"/>
 <form:errors path="onion"/>
 <form:errors path="ketchup"/>
-<form:errors path="pickles"/>
+<form:errors path="cheese"/>
 </thead>
 <tbody>
 <tr>
 <td>Sauce</td>
-<td><form:radiobutton path="sauce" value="true" checked="checked"/></td>
-<td><form:radiobutton path="sauce" value="false"/></td>
-</tr>
-<tr>
-<td>Lettuce</td>
-<td><form:radiobutton path="lettuce" value="true" checked="checked"/></td>
-<td><form:radiobutton path="lettuce" value="false"/></td>
-</tr>
-<tr>
-<td>Tomato</td>
-<td><form:radiobutton path="tomato" value="true" checked="checked"/></td>
-<td><form:radiobutton path="tomato" value="false"/></td>
+<td><form:radiobutton path="sauce" value="true"/></td>
+<td><form:radiobutton path="sauce" value="false" checked="checked"/></td>
 </tr>
 <tr>
 <td>Onion</td>
-<td><form:radiobutton path="onion" value="true" checked="checked"/></td>
-<td><form:radiobutton path="onion" value="false"/></td>
+<td><form:radiobutton path="onion" value="true" /></td>
+<td><form:radiobutton path="onion" value="false" checked="checked"/></td>
 </tr>
 <tr>
 <td>Ketchup</td>
@@ -140,9 +123,9 @@
 <td><form:radiobutton path="ketchup" value="false" checked="checked"/></td>
 </tr>
 <tr>
-<td>Pickles</td>
-<td><form:radiobutton path="pickles" value="true"/></td>
-<td><form:radiobutton path="pickles" value="false" checked="checked"/></td>
+<td>Cheese</td>
+<td><form:radiobutton path="cheese" value="true"/></td>
+<td><form:radiobutton path="cheese" value="false" checked="checked"/></td>
 </tr>
 </tbody>
 </table>
@@ -150,30 +133,15 @@
 
 <div class="col">
 <input type="hidden" name="orderId" value="${ orderId }">
-<button class="btn btn-warning">OrderNow!</button>
+<button class="btn btn-warning">UpdateFries!</button>
 </div>
-
 
 </form:form>
-
-<div class="col">
-<form action="/order/fries" method="post">
-<input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-warning">Next, Fries!</button>
-</form>
 </div>
 
-<div class="col">
-<form action="/order/checkout" method="post">
-<input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-warning">Checkout!</button>
-</form>
-</div>
+
+
 
 </div>
-
-</div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 </body>
 </html>

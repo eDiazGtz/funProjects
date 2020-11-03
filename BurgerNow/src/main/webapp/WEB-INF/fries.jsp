@@ -16,74 +16,92 @@
 </head>
 <body>
 <div class="container">
-
-<table class="table">
-<thead>
-<td><a href="/">HOME</a></td>
-<td>
-<form action="/checkout" method="post">
-<input type="hidden" name="orderId" value="${ orderId }"/>
-<button>ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
-</form>
-</td>
-<td>ACCOUNT</td>
-<c:choose>
-<c:when test="${user_id != null }">
-<td><a href="/logout">LOGOUT</a></td>
-</c:when>
-<c:otherwise>
-<td><a href="/login">LOGIN</a></td>
-</c:otherwise>	
-</c:choose>
-</thead>
-</table>
-
+<div class="row">
+<div class="col">
+<h1 class="bg-danger text-light mt-2 pb-2 d-flex justify-content-around rounded shadow-lg">BurgerNow!</h1>
+</div>
+<div class="col"></div>
+<div class="col"></div>
+</div>
 <hr>
 
+<ul class="nav nav-pills justify-content-end">
+  <li class="nav-item">
+  	<form action="/checkout" method="post">
+	<input type="hidden" name="orderId" value="${ orderId }"/>
+	<button class="btn btn-link bg-danger text-light shadow">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
+	</form>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link bg-danger text-light shadow" href="/">HOME</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link bg-danger text-light shadow" href="/account">ACCOUNT</a>
+  </li>
+  <li class="nav-item">
+<c:choose>
+<c:when test="${user_id != null }">
+<li class="nav-item">
+<a class="nav-link bg-danger text-light shadow" href="/logout">LOGOUT</a>
+</li>
+</c:when>
+<c:otherwise>
+<li class="nav-item">
+<a class="nav-link bg-danger text-light shadow" href="/login">LOGIN</a>
+</li>
+</c:otherwise>
+</c:choose>
+</ul>
+<hr>
+
+
+<div class="form-inline bg-danger text-light rounded p-2 d-flex justify-content-around">
 <form:form action="/fries" method="post" modelAttribute="fries">
 	<form:input type="hidden" value="${orderId}" path="fOrder" />
 
-<div class="form form-group">
-<form:label path="qty"> Fry Quantity: 
+<div class="row">
+<div class="col">
+<form:label path="qty"> Fries: 
 <form:errors path="qty"/>
-<form:input path="qty" type="number" min="1" value="1" />
+<form:input path="qty" class="form-control" type="number" min="1" max="500" value="1" />
 </form:label>
 </div>
 
-<div class="form form-group">
-<table class="table table-hover">
+<div class="col">
+<table class="table table-hover text-light">
 <form:label path="type">
 <thead>
-<td>Type</td>
-<td>Select</td>
+<th>Type</th>
+<th>Select</th>
 </form:label>
 <form:errors path="type"/>
 </thead>
 <tbody>
 <tr>
+<td>No Fry</td>
+<td><form:radiobutton path="type"/></td>
+</tr>
+<tr>
 <td>Golden</td>
-<td><form:radiobutton path="type" value="golden" checked="checked"/></td>
+<td><form:radiobutton path="type" value="Golden Fries" checked="checked"/></td>
 </tr>
 <tr>
 <td>Crispy</td>
-<td><form:radiobutton path="type" value="crispy"/></td>
+<td><form:radiobutton path="type" value="Crispy Fries"/></td>
 </tr>
 <tr>
 <td>Light</td>
-<td><form:radiobutton path="type" value="light"/></td>
-</tr>
-<td>No Fry</td>
-<td><form:radiobutton path="type"/></td>
+<td><form:radiobutton path="type" value="Light Fries"/></td>
 </tr>
 </table>
 </div>
 
-<div class="form form-group">
-<table class="table table-hover">
+<div class="col">
+<table class="table table-hover text-light">
 <thead>
-<td>Ingredients</td>
-<td>Yes</td>
-<td>No</td>
+<th>Ingredients</th>
+<th>Yes</th>
+<th>No</th>
 <form:errors path="sauce"/>
 <form:errors path="onion"/>
 <form:errors path="ketchup"/>
@@ -114,25 +132,28 @@
 </table>
 </div>
 
-
+<div class="col">
 <input type="hidden" name="orderId" value="${ orderId }">
-<button class="btn btn-primary">Order Fries!</button>
+<button class="btn btn-warning">OrderNow!</button>
+</div>
 
 </form:form>
+<hr>
+
+<div class="col">
+<form action="/order/burger" method="post">
+<input type="hidden" name="orderId" value="${ orderId }"/>
+<button class="btn btn-warning">Burgers!</button>
+</form>
+</div>
 
 <hr>
 
-<form action="/burger" method="get">
+<form action="/order/checkout" method="post">
 <input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-primary">More Burgers!</button>
+<button class="btn btn-warning">Checkout!</button>
 </form>
-
-<hr>
-
-<form action="/checkout" method="get">
-<input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-primary">Checkout!</button>
-</form>
+</div>
 
 
 

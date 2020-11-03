@@ -50,8 +50,8 @@ public class HomeController {
 			return "home.jsp";
 		}
 		viewModel.addAttribute("user_id", userId);
-		viewModel.addAttribute("user", this.uService.getOneUser(userId));
-		User thisUser = this.uService.getOneUser(userId);
+		viewModel.addAttribute("user", this.uService.findOneUser(userId));
+		User thisUser = this.uService.findOneUser(userId);
 		List<Order> guestOrders = thisUser.getOrders();
 		viewModel.addAttribute("guestOrders", guestOrders);
 		return "home.jsp";
@@ -99,12 +99,49 @@ public class HomeController {
 		return "redirect:/";
 	}
 	
+
+	
+	
+	
+	//-----------------------------------
+	//Account
+	//-----------------------------------
+	@GetMapping("/account")
+	public String viewAccount(@ModelAttribute("user") User user, Model viewModel, HttpSession session) {
+		Long userId = (Long)session.getAttribute("user_id");
+		if(userId == null) {
+			return "redirect:/";
+		}
+		viewModel.addAttribute("user", uService.findOneUser(userId));
+		return "account.jsp";
+	}
+	
+	
+	@PostMapping("/account/first/{id}")
+	public String editBurger(@PathVariable("id") Long id, Model viewModel, HttpSession session, @RequestParam("firstName") String firstName) {
+		User thisUser = this.uService.findOneUser(id);
+		Long userId = (Long)session.getAttribute("user_id");
+		User sessUser = uService.findOneUser(userId);
+		viewModel.addAttribute("pass", thisUser.getPassword());
+		if(thisUser.getId() == sessUser.getId()) {
+
+			thisUser.setFirstName(firstName);
+			this.uService.saveUser(thisUser);
+			return "account.jsp";
+	} else {
+		System.out.println("takoyaki2");
+		System.out.println(thisUser.getId());
+		System.out.println(session.getAttribute("user_id"));
+		return "redirect:/";
+	}
+
+	}
 	
 
 	//-----------------------------------
 	//ORDERING BURGERS
 	//-----------------------------------
-	@GetMapping("/burger")
+	@PostMapping("/order/burger")
 	public String burgerMenu(@ModelAttribute("burger") Burger burger, Model viewModel, @RequestParam("orderId") Long orderId) {
 		//Model to Pass ID
 		viewModel.addAttribute("orderId", orderId);
@@ -120,7 +157,7 @@ public class HomeController {
 	//New Order : To Burger
 	//Create New Order From Home
 	//-----------------------------------
-	@PostMapping("/order/burger")
+	@PostMapping("/new/order/burger")
 	public String newOrder(@ModelAttribute("burger") Burger burger, Model viewModel) {
 		//Starts new Order upon arriving
 		Order newOrder = new Order();
@@ -175,8 +212,8 @@ public class HomeController {
 	//-----------------------------------
 	//ORDERING FRIES
 	//-----------------------------------
-	//Adding Burger to Order
-	@GetMapping("/fries")
+	//Adding Fry to Order
+	@PostMapping("/order/fries")
 	public String fryMenu(@ModelAttribute("fries") Fry fry, Model viewModel, @RequestParam("orderId") Long orderId) {
 		//Model to Pass ID
 		viewModel.addAttribute("orderId", orderId);
@@ -228,7 +265,12 @@ public class HomeController {
 	//-----------------------------------
 	//CHECKOUT
 	//-----------------------------------
-	@GetMapping("/checkout")
+	
+	//Add functionality -- if (order.guest is not null && guestID == sessionID) --> allow view of checkout item. 
+	//To secure people brute forcing checkout items that belong to users --- check that order has guest.
+	//If it does, check that the guestID == SessionID so that other guests cannot brute force either. 
+	
+	@PostMapping("/order/checkout")
 	public String getCheckout(Model viewModel, @RequestParam("orderId") Long orderId) {
 		//Model to Pass ID
 		viewModel.addAttribute("orderId", orderId);
@@ -252,22 +294,98 @@ public class HomeController {
 		return "checkout.jsp";
 	}
 
+	
 	@PostMapping("/purchase")
 	public String purchase(Model viewModel, @RequestParam("orderId") Long orderId, HttpSession session) {
 		Order finalOrder = oService.findOneOrder(orderId);
 		finalOrder.setComplete(true);
 		Long userId = (Long)session.getAttribute("user_id");
-		User user = this.uService.getOneUser(userId);
+		if(userId == null) {
+			oService.saveOrder(finalOrder);
+			return "redirect:/";
+		} else {
+		User user = this.uService.findOneUser(userId);
 		finalOrder.setGuest(user);
 		oService.saveOrder(finalOrder);
 		return "redirect:/";
+		}
 	}
 
 	
-	
+
 	//-----------------------------------
 	//EDIT SINGLE ITEM
 	//-----------------------------------
+	@PostMapping("/edit/burger/{id}")
+	public String editBurger(@PathVariable("id") Long id, @ModelAttribute("burger") Burger burger, Model viewModel, @RequestParam("orderId") Long orderId) {
+		viewModel.addAttribute("burger", bService.findOneBurger(id));
+		viewModel.addAttribute("orderId", orderId);
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		return "editBurger.jsp";
+	}
+	
+	@PostMapping("/finalize/burger/{id}")
+	public String finalizeBurger(@Valid @ModelAttribute("burger") Burger updatedBurger, BindingResult result, Model viewModel, @PathVariable("id") Long id, @RequestParam("orderId") Long orderId) {
+		if(result.hasErrors()) {
+			viewModel.addAttribute("burger", bService.findOneBurger(id));
+			viewModel.addAttribute("orderId", orderId);
+			Order modelOrder = this.oService.findOneOrder(orderId);
+			viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+			viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+			viewModel.addAttribute("order", oService.findOneOrder(orderId));
+			return "editBurger.jsp";
+		}
+		viewModel.addAttribute("orderId", orderId);
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		this.bService.saveBurger(updatedBurger);
+		return "checkout.jsp";
+	}
+	
+	
+	//FF Edit	
+	@PostMapping("/edit/fry/{id}")
+	public String editFries(@PathVariable("id") Long id, @ModelAttribute("fries") Fry fry, Model viewModel, @RequestParam("orderId") Long orderId) {
+		viewModel.addAttribute("fries", fService.findOneFry(id));
+		viewModel.addAttribute("orderId", orderId);
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		return "editFries.jsp";
+	}
+	
+	@PostMapping("/finalize/fry/{id}")
+	public String finalizeFry(@Valid @ModelAttribute("fries") Fry updatedFry, BindingResult result, Model viewModel, @PathVariable("id") Long id, @RequestParam("orderId") Long orderId) {
+		if(result.hasErrors()) {
+			viewModel.addAttribute("fries", fService.findOneFry(id));
+			viewModel.addAttribute("orderId", orderId);
+			Order modelOrder = this.oService.findOneOrder(orderId);
+			viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+			viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+			viewModel.addAttribute("order", oService.findOneOrder(orderId));
+			return "editFries.jsp";
+		}
+		viewModel.addAttribute("orderId", orderId);
+		Order modelOrder = this.oService.findOneOrder(orderId);
+		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
+		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+
+		viewModel.addAttribute("order", oService.findOneOrder(orderId));
+		this.fService.saveFry(updatedFry);
+		return "checkout.jsp";
+	}
+
 
 	
 	
