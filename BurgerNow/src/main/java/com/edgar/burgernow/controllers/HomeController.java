@@ -104,7 +104,7 @@ public class HomeController {
 	
 	
 	//-----------------------------------
-	//Account
+	//EDIT ACCOUNT
 	//-----------------------------------
 	@GetMapping("/account")
 	public String viewAccount(@ModelAttribute("user") User user, Model viewModel, HttpSession session) {
@@ -115,27 +115,142 @@ public class HomeController {
 		viewModel.addAttribute("user", uService.findOneUser(userId));
 		return "account.jsp";
 	}
-	
-	
-	@PostMapping("/account/first/{id}")
-	public String editBurger(@PathVariable("id") Long id, Model viewModel, HttpSession session, @RequestParam("firstName") String firstName) {
-		User thisUser = this.uService.findOneUser(id);
-		Long userId = (Long)session.getAttribute("user_id");
-		User sessUser = uService.findOneUser(userId);
-		viewModel.addAttribute("pass", thisUser.getPassword());
-		if(thisUser.getId() == sessUser.getId()) {
 
-			thisUser.setFirstName(firstName);
-			this.uService.saveUser(thisUser);
+	//Edit FirstName
+	@GetMapping("/account/first/{id}")
+	public String getAccount(@ModelAttribute("user") User user, Model viewModel, HttpSession session, @PathVariable("id") Long id) {
+		Long userId = (Long)session.getAttribute("user_id");
+		if(userId == null) {
+			return "redirect:/";
+		}
+		User thisUser = this.uService.findOneUser(id);
+		if(thisUser == null) {
+			return "redirect:/";
+		}
+		User sessUser = uService.findOneUser(userId);
+		viewModel.addAttribute("user", uService.findOneUser(userId));
+		if(thisUser.getId() == sessUser.getId()) {
 			return "account.jsp";
 	} else {
-		System.out.println("takoyaki2");
-		System.out.println(thisUser.getId());
-		System.out.println(session.getAttribute("user_id"));
 		return "redirect:/";
+		}
 	}
-
+	
+	@PostMapping("/account/first/{id}")
+	public String editFirstName(@ModelAttribute("user") User user, @PathVariable("id") Long id, Model viewModel, HttpSession session, @RequestParam("firstName") String firstName) {
+		Long userId = (Long)session.getAttribute("user_id");
+		if(userId == null) {
+			return "redirect:/";
+		}
+		User thisUser = this.uService.findOneUser(id);
+		if(thisUser == null) {
+			return "redirect:/";
+		}
+		User sessUser = uService.findOneUser(userId);
+		viewModel.addAttribute("user", uService.findOneUser(userId));
+		if(thisUser.getId() == sessUser.getId()) {
+			thisUser.setFirstName(firstName);
+			this.uService.saveUser(thisUser);
+			viewModel.addAttribute("user", uService.findOneUser(userId));
+			return "account.jsp";
+	} else {
+		return "redirect:/";		
+		}
 	}
+	
+	//Edit LastName
+	@GetMapping("/account/last/{id}")
+	public String getForLastName(@ModelAttribute("user") User user, Model viewModel, HttpSession session, @PathVariable("id") Long id) {
+		Long userId = (Long)session.getAttribute("user_id");
+		if(userId == null) {
+			return "redirect:/";
+		}
+		User thisUser = this.uService.findOneUser(id);
+		if(thisUser == null) {
+			return "redirect:/";
+		}
+		User sessUser = uService.findOneUser(userId);
+		viewModel.addAttribute("user", uService.findOneUser(userId));
+		if(thisUser.getId() == sessUser.getId()) {
+			return "account.jsp";
+	} else {
+		return "redirect:/";
+		}
+	}
+	
+	@PostMapping("/account/last/{id}")
+	public String editLastName(@Valid @ModelAttribute("user") User user, BindingResult result, @PathVariable("id") Long id, Model viewModel, HttpSession session, @RequestParam("lastName") String lastName) {
+		Long userId = (Long)session.getAttribute("user_id");
+		if(userId == null) {
+			return "redirect:/";
+		}
+		if(result.hasErrors()) {
+			viewModel.addAttribute("user", uService.findOneUser(userId));
+			return "redirect:/account/last/" + userId;
+		}
+		User thisUser = this.uService.findOneUser(id);
+		if(thisUser == null) {
+			return "redirect:/";
+		}
+		User sessUser = uService.findOneUser(userId);
+		viewModel.addAttribute("user", uService.findOneUser(userId));
+		if(thisUser.getId() == sessUser.getId()) {
+			thisUser.setLastName(lastName);
+			this.uService.saveUser(thisUser);
+			viewModel.addAttribute("user", uService.findOneUser(userId));
+			return "account.jsp";
+	} else {
+		return "redirect:/";		
+		}
+	}
+	
+	
+	//Edit Email
+	@GetMapping("/account/email/{id}")
+	public String getForEmail(@ModelAttribute("user") User user, Model viewModel, HttpSession session, @PathVariable("id") Long id) {
+		Long userId = (Long)session.getAttribute("user_id");
+		if(userId == null) {
+			return "redirect:/";
+		}
+		User thisUser = this.uService.findOneUser(id);
+		if(thisUser == null) {
+			return "redirect:/";
+		}
+		User sessUser = uService.findOneUser(userId);
+		viewModel.addAttribute("user", uService.findOneUser(userId));
+		if(thisUser.getId() == sessUser.getId()) {
+			return "account.jsp";
+	} else {
+		return "redirect:/";
+		}
+	}
+	
+	@PostMapping("/account/email/{id}")
+	public String editEmail(@Valid @ModelAttribute("user") User user, BindingResult result, @PathVariable("id") Long id, Model viewModel, HttpSession session, @RequestParam("email") String email) {
+		Long userId = (Long)session.getAttribute("user_id");
+		if(userId == null) {
+			return "redirect:/";
+		}
+		if(result.hasErrors()) {
+			viewModel.addAttribute("user", uService.findOneUser(userId));
+			return "redirect:/account/email/" + userId;
+		}
+		User thisUser = this.uService.findOneUser(id);
+		if(thisUser == null) {
+			return "redirect:/";
+		}
+		User sessUser = uService.findOneUser(userId);
+		viewModel.addAttribute("user", uService.findOneUser(userId));
+		if(thisUser.getId() == sessUser.getId()) {
+			thisUser.setEmail(email);
+			this.uService.saveUser(thisUser);
+			viewModel.addAttribute("user", uService.findOneUser(userId));
+			return "account.jsp";
+	} else {
+		return "redirect:/";		
+		}
+	}
+	
 	
 
 	//-----------------------------------

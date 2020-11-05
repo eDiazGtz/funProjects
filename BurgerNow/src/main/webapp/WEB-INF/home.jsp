@@ -69,7 +69,7 @@
 
 
 <div class="col mr-5">
-<table class="table table-hover table-borderless table-sm bg-danger text-light rounded p-5 mr-5 w-100 overflow-auto">
+<table class="table table-hover table-borderless table-sm bg-danger text-light rounded p-5 mr-5" style="height:100px; overflow:scroll">
 <thead>
 <th>Previous Orders</th>
 </thead>

@@ -54,11 +54,13 @@
 <div class="col bg-danger text-light mt-2 pb-2 rounded">
 <h3 class="d-flex justify-content-around">Your Account!</h3>
 
+<p>${ errorMessages }</p>
+
   <div class="form-row align-items-center d-flex justify-content-around">
     <div class="col-auto">
-<form method="post" action="/account/first/${ user.id }" >
+<form method="post" action="/account/first/${ user.id }">
 <label for="firstName">First name:</label>
-<input type="text" class="form-control" id="firstName" name="firstName" value="${ user.firstName }">
+<input type="text" class="form-control" id="firstName" name="firstName" value="${ user.firstName }" required>
 <button class="btn btn-warning">Edit First Name</button>
 </form>
 </div>
@@ -66,8 +68,8 @@
 <div class="form-row align-items-center d-flex justify-content-around">
 <div class="col-auto">
 <form method="post" action="/account/last/${ user.id }" >
-<label for="firstName">Last name:</label>
-<input type="text" class="form-control" id="firstName" name="firstName" value="${ user.lastName }">
+<label for="lastName">Last name:</label>
+<input type="text" class="form-control" id="lastName" name="lastName" value="${ user.lastName }" required>
 <button class="btn btn-warning">Edit Last Name</button>
 </form>
 </div>
@@ -75,8 +77,8 @@
 <div class="form-row align-items-center d-flex justify-content-around">
 <div class="col-auto">
 <form method="post" action="/account/email/${ user.id }" >
-<label for="firstName">Email:</label>
-<input type="text" class="form-control" id="firstName" name="firstName" value="${ user.email }">
+<label for="email">Email:</label>
+<input type="email" class="form-control" id="email" name="email" value="${ user.email }" required>
 <button class="btn btn-warning">Edit Email</button>
 </form>
 </div>
