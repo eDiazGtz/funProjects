@@ -83,7 +83,7 @@
 			<div class="form-group">
 				<form:label path="confirmPassword">Confirm Password</form:label>
 				<form:errors path="confirmPassword" />
-				<form:input type="confirmPassword" class="form-control col-form-label"
+				<form:input type="password" class="form-control col-form-label"
 					path="confirmPassword" />
 			</div>
 

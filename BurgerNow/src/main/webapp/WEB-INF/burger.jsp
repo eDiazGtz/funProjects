@@ -27,7 +27,7 @@
 
 <ul class="nav nav-pills justify-content-end">
   <li class="nav-item">
-  	<form action="/checkout" method="post">
+  	<form action="/checkout" method="get">
 	<input type="hidden" name="orderId" value="${ orderId }"/>
 	<button class="btn btn-link bg-danger text-light shadow">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
 	</form>
@@ -56,6 +56,8 @@
 
 <div class="form-inline bg-danger text-light rounded p-2 d-flex justify-content-around">
 <form:form class="form-inline" action="/burger" method="post" modelAttribute="burger">
+	<input type="hidden" name="orderId" value="${ orderId }">
+	<form:errors path="bOrder"/>
 	<form:input type="hidden" value="${orderId}" path="bOrder" />
 
 <div class="row">
@@ -149,22 +151,19 @@
 </div>
 
 <div class="col">
-<input type="hidden" name="orderId" value="${ orderId }">
 <button class="btn btn-warning">OrderNow!</button>
 </div>
-
-
 </form:form>
 
 <div class="col">
-<form action="/order/fries" method="post">
+<form action="/fries" method="get">
 <input type="hidden" name="orderId" value="${ orderId }"/>
 <button class="btn btn-warning">Next, Fries!</button>
 </form>
 </div>
 
 <div class="col">
-<form action="/order/checkout" method="post">
+<form action="/checkout" method="get">
 <input type="hidden" name="orderId" value="${ orderId }"/>
 <button class="btn btn-warning">Checkout!</button>
 </form>

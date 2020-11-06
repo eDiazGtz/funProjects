@@ -26,7 +26,15 @@
 <hr>
 
 
-<ul class="nav nav-pills justify-content-end">
+
+
+<ul class="nav nav-pills justify-content-end">  
+  <li class="nav-item">
+	<form action="/new/order/burger" method="post">
+	<input type="hidden" name="orderId" value="${ orderId }"/>
+	<button class="btn btn-link bg-danger text-light shadow">ORDERNOW!</button>
+	</form>
+  </li>
   <li class="nav-item">
     <a class="nav-link active bg-light text-dark shadow" href="/">HOME</a>
   </li>
@@ -52,23 +60,10 @@
 
 
 <div class="row">
-<div class="col">
 
-<div class="row">
-<div class="col bg-danger rounded pb-2 m-4 ml-5">
-<h4 class="text-light d-flex justify-content-around" >Let's Burger!</h4>
-<form class="d-flex justify-content-around" action="/new/order/burger" method="post">
-<input type="hidden" name="orderId" value="${ orderId }"/>
-<button class="btn btn-warning">Order Now!</button>
-</form>
-</div>
 <div class="col m-n5"></div>
 
-</div>
-</div>
-
-
-<div class="col mr-5">
+<div class="col">
 <table class="table table-hover table-borderless table-sm bg-danger text-light rounded p-5 mr-5" style="height:100px; overflow:scroll">
 <thead>
 <th>Previous Orders</th>
@@ -81,7 +76,10 @@
 <c:if test="${ order.complete == true}">
 <c:forEach items="${ order.burgers }" var="burger">
 <tr>
-<td>${ burger.qty } ${ burger.type } - 
+<td>${ burger.qty } ${ burger.type }
+<c:if test = "${ burger.sauce == true || burger.lettuce == true || burger.tomato == true || burger.onion == true || burger.ketchup == true || burger.pickles == true}">
+-
+</c:if>
 
 <c:if test = "${  burger.sauce == true }">
 Sauce 
@@ -107,7 +105,10 @@ Pickles
 
 <c:forEach items="${ order.fries }" var="fry">
 <tr>
-<td>${ fry.qty } ${ fry.type } - 
+<td>${ fry.qty } ${ fry.type } 
+<c:if test = "${ fry.sauce == true || fry.onion == true || fry.ketchup == true || fry.cheese == true}">
+-
+</c:if>
 
 <c:if test = "${  fry.sauce == true }">
 Sauce 
@@ -124,15 +125,17 @@ Cheese
 </td>
 </tr>
 </c:forEach>
-</c:if>
 
 <td><hr></td>
 <td>
-<form action="/checkout" method="post">
+<form action="/checkout" method="get">
 <input type="hidden" name="orderId" value="${ order.id }"/>
 <button class="btn btn-warning">Order Again!</button>
 </form>
 </td>
+
+</c:if>
+
 </c:forEach>
 </c:when>
 <c:otherwise>
@@ -147,7 +150,6 @@ Cheese
 </tbody>
 </table>
 </div>
-
 </div>
 </div>
 

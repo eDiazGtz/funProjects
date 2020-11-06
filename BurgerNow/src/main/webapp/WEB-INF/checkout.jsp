@@ -27,7 +27,7 @@
 
 <ul class="nav nav-pills justify-content-end">
   <li class="nav-item">
-  	<form action="/checkout" method="post">
+  	<form action="/checkout" method="get">
 	<input type="hidden" name="orderId" value="${ orderId }"/>
 	<button class="btn btn-warning bg-light text-dark border border-white">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
 	</form>
@@ -62,8 +62,10 @@
 <tbody>
 <c:forEach items="${ order.burgers }" var="burger">
 <tr>
-<td>${ burger.qty } ${ burger.type } - 
-
+<td>${ burger.qty } ${ burger.type }
+<c:if test = "${ burger.sauce == true || burger.lettuce == true || burger.tomato == true || burger.onion == true || burger.ketchup == true || burger.pickles == true}">
+-
+</c:if>
 <c:if test = "${  burger.sauce == true }">
 Sauce 
 </c:if>
@@ -87,7 +89,7 @@ Pickles
 
 <td>
 <div class="form-inline">
-<form action="/edit/burger/${ burger.id }" method="post">
+<form action="/edit/burger/${ burger.id }" method="get">
 <input type="hidden" name="orderId" value="${ orderId }"/>
 <button class="btn btn-warning">Edit</button>
 </form>
@@ -105,8 +107,11 @@ Pickles
 
 <c:forEach items="${ order.fries }" var="fry">
 <tr>
-<td>${ fry.qty } ${ fry.type } - 
+<td>${ fry.qty } ${ fry.type } 
 
+<c:if test = "${ fry.sauce == true || fry.onion == true || fry.ketchup == true || fry.cheese == true}">
+-
+</c:if>
 <c:if test = "${  fry.sauce == true }">
 Sauce 
 </c:if>
@@ -123,7 +128,7 @@ Cheese
 
 <td>
 <div class="form-inline">
-<form action="/edit/fry/${ fry.id }" method="post">
+<form action="/edit/fry/${ fry.id }" method="get">
 <input type="hidden" name="orderId" value="${ orderId }"/>
 <button class="btn btn-warning">Edit</button>
 </form>
@@ -145,13 +150,13 @@ Cheese
 <hr>
 <ul class="nav nav-justified">
   <li class="nav-item">
-<form action="/order/burger" method="post">
+<form action="/burger" method="get">
 <input type="hidden" name="orderId" value="${ orderId }"/>
 <button class="btn btn-warning">More Burgers!</button>
 </form>
 </li>
   <li class="nav-item">
-<form action="/order/fries" method="post">
+<form action="/fries" method="get">
 <input type="hidden" name="orderId" value="${ orderId }"/>
 <button class="btn btn-warning">More Fries!</button>
 </form>

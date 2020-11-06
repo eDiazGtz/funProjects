@@ -36,6 +36,7 @@ public class User {
 	@NotBlank
 	private String email;
 	@NotBlank
+	@Size(min=8, message="must be at least 8 characters long")
 	private String password;
 	@Transient
 	private String confirmPassword;

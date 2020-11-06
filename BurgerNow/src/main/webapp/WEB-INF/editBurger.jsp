@@ -27,7 +27,7 @@
 
 <ul class="nav nav-pills justify-content-end">
   <li class="nav-item">
-  	<form action="/checkout" method="post">
+  	<form action="/checkout" method="get">
 	<input type="hidden" name="orderId" value="${ orderId }"/>
 	<button class="btn btn-link bg-danger text-light shadow">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
 	</form>
