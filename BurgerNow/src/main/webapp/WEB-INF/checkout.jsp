@@ -2,6 +2,7 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html>
@@ -29,7 +30,7 @@
   <li class="nav-item">
   	<form action="/checkout" method="get">
 	<input type="hidden" name="orderId" value="${ orderId }"/>
-	<button class="btn btn-warning bg-light text-dark border border-white">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
+	<button class="btn btn-warning bg-light text-dark border border-white pb-2">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
 	</form>
   </li>
   <li class="nav-item">
@@ -84,6 +85,7 @@ Ketchup
 <c:if test = "${  burger.pickles == true }">
 Pickles 
 </c:if>
+ - $<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ burger.price * burger.qty }"/>
 </td>
 
 
@@ -124,6 +126,7 @@ Ketchup
 <c:if test = "${  fry.cheese == true }">
 Cheese 
 </c:if>
+ - $<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ fry.qty * fry.price }"/>
 </td>
 
 <td>
@@ -143,6 +146,20 @@ Cheese
 </tr>
 </c:forEach>
 
+<tr>
+<td>--------------------------Sub-Total-></td>
+<td>$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ subtotal }"/></td>
+</tr>
+
+<tr>
+<td>---------------------------------Tax-></td>
+<td>$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ tax }"/></td>
+</tr>
+
+<tr>
+<td>-------------------------------Total-></td>
+<td>$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ total }"/></td>
+</tr>
 
 </tbody>
 </table>

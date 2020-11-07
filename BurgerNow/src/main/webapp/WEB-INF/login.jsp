@@ -12,7 +12,6 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
 	integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
 	crossorigin="anonymous">
-
 </head>
 <body>
 	<div class="container">
@@ -22,7 +21,13 @@
 <div class="col"></div>
 </div>
 				
-				<ul class="nav nav-pills justify-content-end">
+<ul class="nav nav-pills justify-content-end">  
+  <li class="nav-item">
+	<form action="/new/order/burger" method="post">
+	<input type="hidden" name="orderId" value="${ orderId }"/>
+	<button class="btn btn-link bg-danger text-light shadow pb-2">ORDERNOW!</button>
+	</form>
+  </li>
   <li class="nav-item">
     <a class="nav-link bg-danger text-light shadow" href="/">HOME</a>
   </li>
@@ -38,12 +43,13 @@
 </c:when>
 <c:otherwise>
 <li class="nav-item">
-<a class="nav-link bg-danger text-light shadow" href="/login">LOGIN</a>
+<a class="nav-link active bg-light text-dark shadow" href="/login">LOGIN</a>
 </li>
 </c:otherwise>
 </c:choose>
 </ul>
 <hr>
+
 				
 				
 <div class="row">

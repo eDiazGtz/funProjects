@@ -31,8 +31,6 @@ public class OrderService {
 		return order;
 	}
 	
-	//Find By Complete == True
-	
 	
 	//Don't need to Delete for now
 	

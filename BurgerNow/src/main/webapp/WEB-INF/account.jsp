@@ -30,7 +30,7 @@
   <li class="nav-item">
 	<form action="/new/order/burger" method="post">
 	<input type="hidden" name="orderId" value="${ orderId }"/>
-	<button class="btn btn-link bg-danger text-light shadow">ORDERNOW!</button>
+	<button class="btn btn-link bg-danger text-light shadow pb-2">ORDERNOW!</button>
 	</form>
   </li>
   <li class="nav-item">

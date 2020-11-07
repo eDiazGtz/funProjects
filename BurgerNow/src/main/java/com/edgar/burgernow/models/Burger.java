@@ -1,5 +1,6 @@
 package com.edgar.burgernow.models;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -23,6 +24,8 @@ public class Burger {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private int qty;
+	@Column(name="price", precision=5, scale=2)
+	private BigDecimal price;
 	private String type;
 	private Boolean sauce;
 	private Boolean lettuce;
@@ -36,13 +39,6 @@ public class Burger {
 	@JoinColumn(name="order_id")
 	private Order bOrder;
 	
-//	@ManyToMany(fetch=FetchType.LAZY)
-//	@JoinTable(
-//			name="burgers_ingredients",
-//			joinColumns = @JoinColumn(name="burger_id"),
-//			inverseJoinColumns = @JoinColumn(name="ingredient_id")
-//	)
-//	private List<Ingredient> ingredients;
 	
 	@Column(updatable = false)
 	@DateTimeFormat(pattern = "yyyy-MM-DD HH:mm:ss")
@@ -95,14 +91,6 @@ public class Burger {
 	public void setbOrder(Order bOrder) {
 		this.bOrder = bOrder;
 	}
-
-//	public List<Ingredient> getIngredients() {
-//		return ingredients;
-//	}
-//
-//	public void setIngredients(List<Ingredient> ingredients) {
-//		this.ingredients = ingredients;
-//	}
 
 	public Date getCreatedAt() {
 		return createdAt;
@@ -166,6 +154,14 @@ public class Burger {
 
 	public void setPickles(Boolean pickles) {
 		this.pickles = pickles;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 	
 	

@@ -1,5 +1,6 @@
 package com.edgar.burgernow.models;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class Order {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private Boolean complete;
+	private BigDecimal total;
 	
 	//Relationships
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -59,6 +61,28 @@ public class Order {
 	public Order() {
 	}
 
+	
+	//Methods
+	//Set Total Price
+	public void setFinalTotal() {
+		List<Burger> allBurgs = this.getBurgers();
+		BigDecimal subtotal = new BigDecimal("0.00");
+		for(int b=0; b<allBurgs.size(); b++) {
+			Burger loopBurg = allBurgs.get(b);
+			subtotal = subtotal.add(loopBurg.getPrice());
+		}
+		List<Fry> allFries = this.getFries();
+		for(int f=0; f<allFries.size(); f++) {
+			Fry loopFries = allFries.get(f);
+			subtotal = subtotal.add(loopFries.getPrice());
+		}
+		BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.08));
+		BigDecimal ttl = subtotal.add(tax);
+		this.total = ttl;
+	}
+
+	
+	
 	
 	public Long getId() {
 		return id;
@@ -115,6 +139,15 @@ public class Order {
 	public void setComplete(Boolean complete) {
 		this.complete = complete;
 	}
+
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
+
 	
 	
 	

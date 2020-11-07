@@ -25,7 +25,13 @@
 </div>
 <hr>
 
-<ul class="nav nav-pills justify-content-end">
+<ul class="nav nav-pills justify-content-end">  
+  <li class="nav-item">
+	<form action="/new/order/burger" method="post">
+	<input type="hidden" name="orderId" value="${ orderId }"/>
+	<button class="btn btn-link bg-danger text-light shadow pb-2">ORDERNOW!</button>
+	</form>
+  </li>
   <li class="nav-item">
     <a class="nav-link bg-danger text-light shadow" href="/">HOME</a>
   </li>
@@ -47,6 +53,7 @@
 </c:choose>
 </ul>
 <hr>
+
 
 <div class="row">
 <div class="col"></div>

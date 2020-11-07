@@ -1,5 +1,7 @@
 package com.edgar.burgernow.controllers;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -39,6 +41,29 @@ public class HomeController {
 	@Autowired
 	private FryService fService;
 
+	// -----------------------------------
+	// PRICE CONTROL
+	// -----------------------------------
+	BigDecimal dblPrice = new BigDecimal(3.449).setScale(2, RoundingMode.CEILING);
+	BigDecimal chzPrice = new BigDecimal(2.40).setScale(2, RoundingMode.CEILING);
+	BigDecimal hamPrice = new BigDecimal(2.099).setScale(2, RoundingMode.CEILING);
+	BigDecimal grchzPrice = new BigDecimal(1.349).setScale(2, RoundingMode.CEILING);
+	BigDecimal fryPrice = new BigDecimal(1.599).setScale(2, RoundingMode.CEILING);
+	BigDecimal chzfryPrice = new BigDecimal(1.95).setScale(2, RoundingMode.CEILING);
+	
+
+	
+//	double dblPrice = 3.45;
+//	double chzPrice = 2.40;
+//	double hamPrice = 2.10;
+//	double grchzPrice = 1.35;
+//	double fryPrice = 1.60;
+//	double chzfryPrice = 1.95;
+	
+
+	// -----------------------------------
+	// HOME && LOGIN
+	// -----------------------------------
 	// Home Page (Root)
 	@GetMapping("/")
 	public String index(HttpSession session, Model viewModel) {
@@ -107,8 +132,7 @@ public class HomeController {
 
 	// Edit FirstName
 	@GetMapping("/account/first/{id}")
-	public String getAccount(@ModelAttribute("user") User user, Model viewModel, HttpSession session,
-			@PathVariable("id") Long id) {
+	public String getAccount(@ModelAttribute("user") User user, Model viewModel, HttpSession session, @PathVariable("id") Long id) {
 		Long userId = (Long) session.getAttribute("user_id");
 		if (userId == null) {
 			return "redirect:/";
@@ -261,6 +285,7 @@ public class HomeController {
 			User newGuest = uService.findOneUser(userId);
 			newOrder.setGuest(newGuest);
 		}
+		newOrder.setTotal(BigDecimal.valueOf(0.00));
 		// Save NewOrder to DB
 		oService.saveOrder(newOrder);
 		// Model to Pass ID
@@ -277,8 +302,16 @@ public class HomeController {
 	public String viewBurger(@ModelAttribute("burger") Burger burger, Model viewModel, @RequestParam("orderId") Long orderId, HttpSession session) {
 		viewModel.addAttribute("orderId", orderId);
 		Order modelOrder = this.oService.findOneOrder(orderId);
+		if(modelOrder == null) {
+			return "redirect:/";
+		}
 		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+		//Burg Prices
+		viewModel.addAttribute("dblPrice", dblPrice);
+		viewModel.addAttribute("chzPrice", chzPrice);
+		viewModel.addAttribute("hamPrice", hamPrice);
+		viewModel.addAttribute("grchzPrice", grchzPrice);
 		// Security
 		// If Order has Guest (if Guest is not null)
 		if (modelOrder.getGuest() != null) {
@@ -314,10 +347,21 @@ public class HomeController {
 		if (burger.getType() == "") {
 			return "redirect:/burger?orderId=" + orderId;
 		}
-		bService.saveBurger(burger); // Works
+		//BURGER PRICE
+		burger.setbOrder(modelOrder);
+		Burger newBurger = bService.saveBurger(burger);
+		if(newBurger.getType().equals("Double-Double")) {
+			newBurger.setPrice(dblPrice);
+		} else if (newBurger.getType().equals("Cheeseburger")) {
+			newBurger.setPrice(chzPrice);
+		} else if (newBurger.getType().equals("Hamburger")) {
+			newBurger.setPrice(hamPrice);
+		} else {
+			newBurger.setPrice(grchzPrice);
+		}
 		// Add Burger to Order
 		List<Burger> orderBurgs = modelOrder.getBurgers();
-		orderBurgs.add(burger);
+		orderBurgs.add(newBurger);
 		// Save Order Change
 		oService.saveOrder(modelOrder);
 		return "redirect:/burger?orderId=" + orderId;
@@ -333,6 +377,9 @@ public class HomeController {
 		Order modelOrder = this.oService.findOneOrder(orderId);
 		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+		//Fry Prices
+		viewModel.addAttribute("fryPrice", fryPrice);
+		viewModel.addAttribute("chzfryPrice", chzfryPrice);
 		// Security
 		// If Order has Guest (if Guest is not null)
 		if (modelOrder.getGuest() != null) {
@@ -365,14 +412,21 @@ public class HomeController {
 		if (fry.getType() == "") {
 			return "redirect:/fries?orderId=" + orderId;
 		}
-		fService.saveFry(fry);
+		//FRY PRICE
+		fry.setPrice(fryPrice);
+		if(fry.getCheese() == true) {
+			fry.setPrice(fry.getPrice().add(chzfryPrice));
+		}
+		fry.setfOrder(modelOrder);
+		Fry newFry = fService.saveFry(fry);
 		// Add Fry to Order
 		List<Fry> orderFries = modelOrder.getFries();
-		orderFries.add(fry);
+		orderFries.add(newFry);
 		// Save Order Change
 		oService.saveOrder(modelOrder);
 		return "redirect:/fries?orderId=" + orderId;
 	}
+	
 
 	// -----------------------------------
 	// CHECKOUT
@@ -381,9 +435,29 @@ public class HomeController {
 	public String postCheckout(Model viewModel, @RequestParam("orderId") Long orderId, HttpSession session) {
 		viewModel.addAttribute("orderId", orderId);
 		Order modelOrder = this.oService.findOneOrder(orderId);
+		if(modelOrder == null) {
+			return "redirect:/";
+		}
 		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
 		viewModel.addAttribute("order", modelOrder);
+		//Total Price
+		List<Burger> allBurgs = modelOrder.getBurgers();
+		BigDecimal subtotal = new BigDecimal(0.00);
+		for(int b=0; b<allBurgs.size(); b++) {
+			Burger loopBurg = allBurgs.get(b);
+			subtotal = subtotal.add(loopBurg.getPrice().setScale(2, RoundingMode.CEILING));
+		}
+		List<Fry> allFries = modelOrder.getFries();
+		for(int f=0; f<allFries.size(); f++) {
+			Fry loopFries = allFries.get(f);
+			subtotal = subtotal.add(loopFries.getPrice().setScale(2, RoundingMode.CEILING));
+		}
+		viewModel.addAttribute("subtotal", subtotal);
+		BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.08));
+		viewModel.addAttribute("tax", tax);
+		BigDecimal total = subtotal.add(tax);
+		viewModel.addAttribute("total", total);
 		// Security
 		// If Order has Guest (if Guest is not null)
 		if (modelOrder.getGuest() != null) {
@@ -420,6 +494,7 @@ public class HomeController {
 			} else {
 				User user = this.uService.findOneUser(userId);
 				finalOrder.setGuest(user);
+				finalOrder.setFinalTotal();
 				oService.saveOrder(finalOrder);
 				return "redirect:/";
 		}
@@ -430,14 +505,34 @@ public class HomeController {
 	// -----------------------------------
 	@GetMapping("/edit/burger/{id}")
 	public String editBurger(@PathVariable("id") Long id, @ModelAttribute("burger") Burger burger, Model viewModel, @RequestParam("orderId") Long orderId, HttpSession session) {
+		Burger editBurger = bService.findOneBurger(id);
 		viewModel.addAttribute("orderId", orderId);
+		viewModel.addAttribute("burger", editBurger);
 		Order modelOrder = this.oService.findOneOrder(orderId);
+		if(modelOrder == null) {
+			return "redirect:/";
+		}
 		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+		//Burg Prices
+		viewModel.addAttribute("dblPrice", dblPrice);
+		viewModel.addAttribute("chzPrice", chzPrice);
+		viewModel.addAttribute("hamPrice", hamPrice);
+		viewModel.addAttribute("grchzPrice", grchzPrice);
 		//Security
 		Long userId = (Long) session.getAttribute("user_id");
-		User sessUser = uService.findOneUser(userId);
-		if (modelOrder.getGuest() != null) {
+		if(editBurger == null) {
+			return "redirect:/checkout?orderId=" + orderId;
+		}
+		Order burgerOrder = editBurger.getbOrder();
+		if(burgerOrder.getId() != modelOrder.getId()) {
+			return "redirect:/";
+		}
+		if(modelOrder.getGuest() != null) {
+			if(userId == null) {
+				return "redirect:/";
+			}
+			User sessUser = uService.findOneUser(userId);
 			User modelUser = modelOrder.getGuest();
 			if (sessUser.getId() != modelUser.getId()) {
 				return "redirect:/";
@@ -451,16 +546,35 @@ public class HomeController {
 		viewModel.addAttribute("orderId", orderId);
 		Order modelOrder = this.oService.findOneOrder(orderId);
 		//Security
-		Long userId = (Long) session.getAttribute("user_id");
-		User sessUser = uService.findOneUser(userId);
 		if (modelOrder.getGuest() != null) {
+			Long userId = (Long) session.getAttribute("user_id");
+			if(userId == null) {
+				return "redirect:/";
+			}
+			User sessUser = uService.findOneUser(userId);
 			User modelUser = modelOrder.getGuest();
 			if (sessUser.getId() != modelUser.getId()) {
 				return "redirect:/";
 			}
 		}
+
 		if (result.hasErrors()) {
 			return "editBurger.jsp";
+		}
+		// If No Burger is Chosen -- Delete Burger
+		if (updatedBurger.getType() == "") {
+			bService.deleteBurger(updatedBurger.getId());
+			return "redirect:/checkout?orderId=" + orderId;
+		}
+		//BURGER PRICE
+		if(updatedBurger.getType().equals("Double-Double")) {
+			updatedBurger.setPrice(dblPrice);
+		} else if (updatedBurger.getType().equals("Cheeseburger")) {
+			updatedBurger.setPrice(chzPrice);
+		} else if (updatedBurger.getType().equals("Hamburger")) {
+			updatedBurger.setPrice(chzPrice);
+		} else {
+			updatedBurger.setPrice(grchzPrice);
 		}
 		this.bService.saveBurger(updatedBurger);
 		return "redirect:/checkout?orderId=" + orderId;
@@ -469,14 +583,31 @@ public class HomeController {
 	// FF Edit
 	@GetMapping("/edit/fry/{id}")
 	public String editFries(@PathVariable("id") Long id, @ModelAttribute("fries") Fry fry, Model viewModel, HttpSession session, @RequestParam("orderId") Long orderId) {
+		Fry editFry = fService.findOneFry(id);
 		viewModel.addAttribute("orderId", orderId);
 		Order modelOrder = this.oService.findOneOrder(orderId);
+		if(modelOrder == null) {
+			return "redirect:/";
+		}
 		viewModel.addAttribute("burgQty", modelOrder.getBurgers().size());
 		viewModel.addAttribute("fryQty", modelOrder.getFries().size());
+		//Fry Prices
+		viewModel.addAttribute("fryPrice", fryPrice);
+		viewModel.addAttribute("chzfryPrice", chzfryPrice);
 		//Security
 		Long userId = (Long) session.getAttribute("user_id");
-		User sessUser = uService.findOneUser(userId);
+		if(editFry == null) {
+			return "redirect:/checkout?orderId=" + orderId;
+		}
+		Order fryOrder = editFry.getfOrder();
+		if(fryOrder.getId() != modelOrder.getId()) {
+			return "redirect:/";
+		}
 		if (modelOrder.getGuest() != null) {
+			if(userId == null) {
+				return "redirect:/";
+			}
+			User sessUser = uService.findOneUser(userId);
 			User modelUser = modelOrder.getGuest();
 			if (sessUser.getId() != modelUser.getId()) {
 				return "redirect:/";
@@ -490,16 +621,26 @@ public class HomeController {
 		viewModel.addAttribute("orderId", orderId);
 		Order modelOrder = this.oService.findOneOrder(orderId);
 		//Security
-		Long userId = (Long) session.getAttribute("user_id");
-		User sessUser = uService.findOneUser(userId);
 		if (modelOrder.getGuest() != null) {
+			Long userId = (Long) session.getAttribute("user_id");
+			if(userId == null) {
+				return "redirect:/";
+			}
+			User sessUser = uService.findOneUser(userId);
 			User modelUser = modelOrder.getGuest();
 			if (sessUser.getId() != modelUser.getId()) {
 				return "redirect:/";
 			}
 		}
-		if (result.hasErrors()) {
-			return "editFries.jsp";
+		// If No FF is Chosen -- Delete FF
+		if (updatedFry.getType() == "") {
+			fService.deleteFry(updatedFry.getId());
+			return "redirect:/checkout?orderId=" + orderId;
+		}
+		//FRY PRICE
+		updatedFry.setPrice(fryPrice);
+		if(updatedFry.getCheese() == true) {
+			updatedFry.setPrice(updatedFry.getPrice().add(chzfryPrice));
 		}
 		this.fService.saveFry(updatedFry);
 		return "redirect:/checkout?orderId=" + orderId;

@@ -2,6 +2,7 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html>
@@ -29,7 +30,7 @@
   <li class="nav-item">
   	<form action="/checkout" method="get">
 	<input type="hidden" name="orderId" value="${ orderId }"/>
-	<button class="btn btn-link bg-danger text-light shadow">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
+	<button class="btn btn-link bg-danger text-light shadow pb-2">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
 	</form>
   </li>
   <li class="nav-item">
@@ -62,14 +63,14 @@
 
 <div class="row">
 <div class="col">
-<form:label path="qty"> Burgers: 
+<form:label path="qty"> Burgers:
 <form:errors path="qty"/>
-<form:input class="form-control" path="qty" type="number" min="1" max="500" value="1"/>
+<form:input class="form-control ml-2" path="qty" type="number" min="1" max="500" value="1"/>
 </form:label>
 </div>
 
 
-<div class="col">
+<div class="col mr-2 ml-2">
 <table class="table table-hover text-light">
 <form:label path="type">
 <thead>
@@ -84,19 +85,19 @@
 <td><form:radiobutton path="type"/></td>
 </tr>
 <tr>
-<td>Double-Double</td>
+<td>Double-Double [$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ dblPrice }"/>]</td>
 <td><form:radiobutton path="type" value="Double-Double" checked="checked"/></td>
 </tr>
 <tr>
-<td>Cheeseburger</td>
+<td>Cheeseburger [$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ chzPrice }"/>]</td>
 <td><form:radiobutton path="type" value="Cheeseburger"/></td>
 </tr>
 <tr>
-<td>Hamburger</td>
+<td>Hamburger [$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ hamPrice }"/>]</td>
 <td><form:radiobutton path="type" value="Hamburger"/></td>
 </tr>
 <tr>
-<td>Grilled Cheese</td>
+<td>Grilled Cheese [$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ grchzPrice }"/>]</td>
 <td><form:radiobutton path="type" value="Grilled Cheese"/></td>
 </tr>
 </table>
@@ -150,19 +151,21 @@
 </table>
 </div>
 
-<div class="col">
+<form:hidden path="price" value="0.01" />
+
+<div class="col mr-n3">
 <button class="btn btn-warning">OrderNow!</button>
 </div>
 </form:form>
 
-<div class="col">
+<div class="col mr-n2 ml-n2">
 <form action="/fries" method="get">
 <input type="hidden" name="orderId" value="${ orderId }"/>
 <button class="btn btn-warning">Next, Fries!</button>
 </form>
 </div>
 
-<div class="col">
+<div class="col mr-n2 ml-n3">
 <form action="/checkout" method="get">
 <input type="hidden" name="orderId" value="${ orderId }"/>
 <button class="btn btn-warning">Checkout!</button>

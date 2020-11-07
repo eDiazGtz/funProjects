@@ -1,5 +1,6 @@
 package com.edgar.burgernow.models;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class Fry {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private int qty;
+	@Column(name="price", precision=5, scale=2)
+	private BigDecimal price;
 	private String type;
 	private Boolean sauce;
 	private Boolean onion;
@@ -151,6 +154,14 @@ public class Fry {
 
 	public void setCheese(Boolean cheese) {
 		this.cheese = cheese;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal fryPrice) {
+		this.price = fryPrice;
 	}
 	
 	

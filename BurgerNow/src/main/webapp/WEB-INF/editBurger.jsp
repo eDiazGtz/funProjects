@@ -2,6 +2,7 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html>
@@ -29,7 +30,7 @@
   <li class="nav-item">
   	<form action="/checkout" method="get">
 	<input type="hidden" name="orderId" value="${ orderId }"/>
-	<button class="btn btn-link bg-danger text-light shadow">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
+	<button class="btn btn-link bg-danger text-light shadow pb-2">ORDER(<c:out value="${burgQty + fryQty}"/>)</button>
 	</form>
   </li>
   <li class="nav-item">
@@ -82,19 +83,19 @@
 <td><form:radiobutton path="type"/></td>
 </tr>
 <tr>
-<td>Double-Double</td>
+<td>Double-Double [$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ dblPrice }"/>]</td>
 <td><form:radiobutton path="type" value="Double-Double" checked="checked"/></td>
 </tr>
 <tr>
-<td>Cheeseburger</td>
+<td>Cheeseburger [$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ chzPrice }"/>]</td>
 <td><form:radiobutton path="type" value="Cheeseburger"/></td>
 </tr>
 <tr>
-<td>Hamburger</td>
+<td>Hamburger [$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ hamPrice }"/>]</td>
 <td><form:radiobutton path="type" value="Hamburger"/></td>
 </tr>
 <tr>
-<td>Grilled Cheese</td>
+<td>Grilled Cheese [$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${ grchzPrice }"/>]</td>
 <td><form:radiobutton path="type" value="Grilled Cheese"/></td>
 </tr>
 </table>
