@@ -1,0 +1,26 @@
+[
+	{
+		"title":"Home",
+		"url":"/"
+	},
+	{
+		"title":"Calendar",
+		"url":"/Calendar/",
+		"description":"AJAX day/week calendar with customizable columns."
+	},
+	{
+		"title":"Month",
+		"url":"/Month/",
+		"description":"AJAX monthly calendar." 
+	},
+	{
+		"title":"Scheduler",
+		"url":"/Scheduler/",
+		"description":"AJAX timeline calendar for multiple resources."
+	},
+	{
+		"title":"Gantt",
+		"url":"/Gantt/",
+		"description":"Timeline for a hierarchy of tasks."
+	}
+]

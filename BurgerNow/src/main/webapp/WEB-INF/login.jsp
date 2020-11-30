@@ -12,15 +12,18 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
 	integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
 	crossorigin="anonymous">
+<link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 	<div class="container">
-<div class="row">
-<div class="col"></div>
+<div class="row" id="header">
+<div class="col">
 <h1 class="d-flex justify-content-around bg-danger text-light m-3 p-2 rounded shadow-lg">Welcome To BurgerNow!</h1>
+</div>
 <div class="col"></div>
 </div>
 				
+<br>
 <ul class="nav nav-pills justify-content-end">  
   <li class="nav-item">
 	<form action="/new/order/burger" method="post">
@@ -78,6 +81,8 @@
 		</div>
 		<div class="col"></div>
 		</div>
+<br>
+<br>
 		</div>
 </body>
 </html>

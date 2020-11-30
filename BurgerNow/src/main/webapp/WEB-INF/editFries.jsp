@@ -13,18 +13,18 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
 	integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
 	crossorigin="anonymous">
-
+<link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 <div class="container">
-<div class="row">
+<div class="row" id="header">
 <div class="col">
 <h1 class="bg-danger text-light mt-2 pb-2 d-flex justify-content-around rounded shadow-lg">BurgerNow!</h1>
 </div>
 <div class="col"></div>
 <div class="col"></div>
 </div>
-<hr>
+<br>
 
 <ul class="nav nav-pills justify-content-end">
   <li class="nav-item">
@@ -140,9 +140,9 @@
 </form:form>
 </div>
 
-
-
-
 </div>
+<br>
+<br>
+
 </body>
 </html>

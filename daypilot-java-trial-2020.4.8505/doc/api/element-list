@@ -1,0 +1,16 @@
+org.daypilot.core.tag
+org.daypilot.data
+org.daypilot.date
+org.daypilot.json
+org.daypilot.recurrence
+org.daypilot.ui
+org.daypilot.ui.args.calendar
+org.daypilot.ui.args.common
+org.daypilot.ui.args.gantt
+org.daypilot.ui.args.month
+org.daypilot.ui.args.scheduler
+org.daypilot.ui.enums
+org.daypilot.ui.enums.gantt
+org.daypilot.ui.enums.month
+org.daypilot.ui.enums.scheduler
+org.daypilot.util
