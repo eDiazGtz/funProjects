@@ -33,6 +33,7 @@ public class Burger {
 	private Boolean onion;
 	private Boolean ketchup;
 	private Boolean pickles;
+	private Boolean reward;
 	
 	//Relationships
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -162,6 +163,14 @@ public class Burger {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public Boolean getReward() {
+		return reward;
+	}
+
+	public void setReward(Boolean reward) {
+		this.reward = reward;
 	}
 	
 	

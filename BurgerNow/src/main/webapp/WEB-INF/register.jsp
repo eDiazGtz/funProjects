@@ -95,6 +95,7 @@
 							path="confirmPassword" />
 					</div>
 
+					<input type="hidden" name="rewards" value=0 />
 					<input class="btn btn-warning" type="submit" value="Register" />
 				</form:form>
 				<a class="text-warning" href="/login">Already Ready for Burgers?

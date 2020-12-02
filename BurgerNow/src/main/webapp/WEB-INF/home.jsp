@@ -63,7 +63,12 @@
 
 <div class="row">
 
-<div class="col m-n5" id="body"></div>
+
+
+
+<!-- <div class="col m-n5" id="body"></div> -->
+
+
 
 <div class="col">
 <table class="table table-hover table-borderless table-sm bg-danger text-light rounded p-5 mr-5" style="height:100px; overflow:scroll">
@@ -159,6 +164,34 @@ Cheese
 </tbody>
 </table>
 </div>
+
+<div>
+<table class="table table-hover table-borderless table-sm bg-danger text-light rounded p-5 mr-5" style="height:100px; overflow:scroll">
+<c:choose>
+<c:when test="${user_id != null }">
+<thead>
+<th>RewardUp with your Burgers!</th>
+</head>
+
+<tbody>
+<td><h2>${ user.rewards }/60</h2></td>
+
+</tbody>
+
+</c:when>
+<c:otherwise>
+<thead>
+<th>RewardUp by <a class="text-light" href="/login"> Signing In!</a></th>
+</c:otherwise>
+</c:choose>
+</thead>
+
+
+
+</table>
+</div>
+
+
 </div>
 </div>
 

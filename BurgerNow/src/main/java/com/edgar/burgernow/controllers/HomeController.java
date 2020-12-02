@@ -350,6 +350,7 @@ public class HomeController {
 		//BURGER PRICE
 		burger.setbOrder(modelOrder);
 		Burger newBurger = bService.saveBurger(burger);
+		newBurger.setReward(false);
 		if(newBurger.getType().equals("Double-Double")) {
 			newBurger.setPrice(dblPrice);
 		} else if (newBurger.getType().equals("Cheeseburger")) {
@@ -366,6 +367,7 @@ public class HomeController {
 		oService.saveOrder(modelOrder);
 		return "redirect:/burger?orderId=" + orderId;
 	}
+	
 
 	// -----------------------------------
 	// ORDERING FRIES
@@ -446,12 +448,12 @@ public class HomeController {
 		BigDecimal subtotal = new BigDecimal(0.00);
 		for(int b=0; b<allBurgs.size(); b++) {
 			Burger loopBurg = allBurgs.get(b);
-			subtotal = subtotal.add(loopBurg.getPrice().setScale(2, RoundingMode.CEILING));
+			subtotal = subtotal.add(loopBurg.getPrice().setScale(2, RoundingMode.CEILING).multiply(BigDecimal.valueOf(loopBurg.getQty())));
 		}
 		List<Fry> allFries = modelOrder.getFries();
 		for(int f=0; f<allFries.size(); f++) {
 			Fry loopFries = allFries.get(f);
-			subtotal = subtotal.add(loopFries.getPrice().setScale(2, RoundingMode.CEILING));
+			subtotal = subtotal.add(loopFries.getPrice().setScale(2, RoundingMode.CEILING).multiply(BigDecimal.valueOf(loopFries.getQty())));
 		}
 		viewModel.addAttribute("subtotal", subtotal);
 		BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.08));
@@ -480,23 +482,48 @@ public class HomeController {
 	// -----------------------------------
 	// PURCHASE
 	// -----------------------------------
+	
+	//REWARDS UPDATE: Change reward from Burger to Order --- add checkbox to Checkout JSP. If checked, make Order.useReward(true)
+	//This will subtract the price of a double-double from an order --- to a min of $0.00 for an order. Regardless of what was ordered.
+	
 	@PostMapping("/purchase")
 	public String purchase(Model viewModel, @RequestParam("orderId") Long orderId, HttpSession session) {
 		Order finalOrder = oService.findOneOrder(orderId);
+		Long userId = (Long) session.getAttribute("user_id");
+		User user = this.uService.findOneUser(userId);
 		if(finalOrder.getBurgers().size() == 0 && finalOrder.getFries().size() == 0) {
 			return "redirect:/checkout?orderId=" + orderId;
 		}
-			finalOrder.setComplete(true);
-			Long userId = (Long) session.getAttribute("user_id");
-			if (userId == null) {
-				oService.saveOrder(finalOrder);
-				return "redirect:/";
-			} else {
-				User user = this.uService.findOneUser(userId);
-				finalOrder.setGuest(user);
-				finalOrder.setFinalTotal();
-				oService.saveOrder(finalOrder);
-				return "redirect:/";
+//		//Check Rewards
+//		List<Burger> allBurgs = finalOrder.getBurgers();
+//		for(int b=0; b<allBurgs.size(); b++) {
+//			Burger loopBurg = allBurgs.get(b);
+//			if(loopBurg.getReward() == true);
+//			user.setRewards(user.getRewards() - (60 * loopBurg.getQty()));
+//			if(user.getRewards() > 0) {
+//				user.setRewards(user.getRewards() + (60 * loopBurg.getQty()));
+//				return "redirect:/checkout?orderId=" + orderId;
+//			}
+//		}
+		finalOrder.setComplete(true);
+		//Purchase Order for Guest and Take back to Home
+		if (userId == null) {
+			oService.saveOrder(finalOrder);
+			return "redirect:/";
+		//Else, someone is signed in. Purchase order and save under User.
+		} else {
+			finalOrder.setGuest(user);
+			finalOrder.setFinalTotal();
+			//Rewards points. Give 10 Points IF client purchase is logged in and spent $10 or more
+			int rewards = finalOrder.getTotal().compareTo(BigDecimal.valueOf(10.00));
+			System.out.println(rewards);
+			if (rewards >= 0) {
+				//Total of finalOrder is => to 10.00; Add 10 to Rewards.
+				user.setRewards(user.getRewards() + 10); //Rewards should be on USER not ORDER
+				System.out.println(user.getRewards());
+			}
+			oService.saveOrder(finalOrder);
+			return "redirect:/";
 		}
 	}
 

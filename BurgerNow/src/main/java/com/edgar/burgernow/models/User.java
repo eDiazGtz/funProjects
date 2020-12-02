@@ -40,6 +40,7 @@ public class User {
 	private String password;
 	@Transient
 	private String confirmPassword;
+	private int rewards;
 
 
 	//Relationships
@@ -139,6 +140,14 @@ public class User {
 		this.orders = orders;
 	}
 
+	public int getRewards() {
+		return rewards;
+	}
+
+	public void setRewards(int rewards) {
+		this.rewards = rewards;
+	}
+	
 	
 	
 }

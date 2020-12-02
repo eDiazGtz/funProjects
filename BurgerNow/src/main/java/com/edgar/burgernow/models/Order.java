@@ -1,6 +1,7 @@
 package com.edgar.burgernow.models;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
@@ -69,12 +70,12 @@ public class Order {
 		BigDecimal subtotal = new BigDecimal("0.00");
 		for(int b=0; b<allBurgs.size(); b++) {
 			Burger loopBurg = allBurgs.get(b);
-			subtotal = subtotal.add(loopBurg.getPrice());
+			subtotal = subtotal.add(loopBurg.getPrice().setScale(2, RoundingMode.CEILING).multiply(BigDecimal.valueOf(loopBurg.getQty())));
 		}
 		List<Fry> allFries = this.getFries();
 		for(int f=0; f<allFries.size(); f++) {
 			Fry loopFries = allFries.get(f);
-			subtotal = subtotal.add(loopFries.getPrice());
+			subtotal = subtotal.add(loopFries.getPrice().setScale(2, RoundingMode.CEILING).multiply(BigDecimal.valueOf(loopFries.getQty())));
 		}
 		BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.08));
 		BigDecimal ttl = subtotal.add(tax);
